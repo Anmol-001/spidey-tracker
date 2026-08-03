@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-spider-glow: rgba(255, 42, 95, 0.35);
+    --color-web-glow: rgba(0, 210, 255, 0.3);
+  }
+
+  body {
+    @apply bg-dark-950 text-slate-100 font-sans;
+    background-image:
+      radial-gradient(circle at 50% 0%, rgba(255, 42, 95, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 100% 100%, rgba(0, 210, 255, 0.05) 0%, transparent 40%),
+      linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size:
+      100% 100%,
+      100% 100%,
+      40px 40px,
+      40px 40px;
+    background-attachment: fixed;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-dark-900/80 backdrop-blur-xl border border-dark-700/60 shadow-2xl;
+  }
+
+  .glass-card-hover {
+    @apply transition-all duration-300 hover:border-spider-500/40 hover:shadow-[0_0_25px_rgba(255,42,95,0.15)] hover:-translate-y-0.5;
+  }
+
+  .glow-spider {
+    box-shadow: 0 0 20px var(--color-spider-glow);
+  }
+
+  .glow-web {
+    box-shadow: 0 0 20px var(--color-web-glow);
+  }
+
+  .text-glow-spider {
+    text-shadow: 0 0 12px rgba(255, 42, 95, 0.6);
+  }
+
+  .text-glow-web {
+    text-shadow: 0 0 12px rgba(0, 210, 255, 0.6);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0d14;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #232f4c;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff2a5f;
+}
