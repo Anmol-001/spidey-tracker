@@ -39,6 +39,24 @@ Detailed documentation is available in the [`docs/`](docs/) directory:
 - [07 - Testing Strategy & QA](docs/07-testing.md)
 
 ---
+## ✨ Current Features
+
+### Backend
+
+- Health monitoring endpoints
+- User registration
+- Password hashing with bcrypt
+- Zod request validation
+- MongoDB persistence
+- Duplicate email detection
+- Duplicate username detection
+- Standardized API responses
+
+### Frontend
+
+- React + Vite dashboard
+- Health status indicator
+- Cyberpunk-inspired UI foundation
 
 ## 🚀 Quick Start
 
@@ -46,7 +64,7 @@ Detailed documentation is available in the [`docs/`](docs/) directory:
 
 - **Node.js**: `v20.x` or `v22.x` (LTS recommended)
 - **npm**: `v10.x` or `v11.x`
-- **MongoDB**: Local MongoDB instance (or standalone fallback mode)
+- **MongoDB**: MongoDB Atlas (recommended) or a local MongoDB instance
 
 ### Installation
 
@@ -117,6 +135,47 @@ Returns operational telemetry confirming the backend server status.
   }
 }
 ```
+### `POST /api/v1/auth/register`
+
+Registers a new user account.
+
+**Request Body**
+
+```json
+{
+  "username": "PeterParker",
+  "email": "peter@example.com",
+  "password": "Spider@123"
+}
+```
+
+**Success Response (201)**
+
+```json
+{
+  "success": true,
+  "message": "User registered successfully",
+  "data": {
+    "id": "...",
+    "username": "PeterParker",
+    "email": "peter@example.com",
+    "createdAt": "...",
+    "updatedAt": "..."
+  }
+}
+```
+
+**Validation**
+
+- Username: 3–30 characters
+- Email: Valid email format
+- Password: Minimum 8 characters with uppercase, lowercase, number, and special character
+
+**Possible Responses**
+
+- 201 Created
+- 400 Bad Request
+- 409 Conflict
 
 ---
 
@@ -128,7 +187,17 @@ Returns operational telemetry confirming the backend server status.
 - **Domain-Agnostic Backend**: Backend contains zero hard-coded Spider-Man domain logic.
 
 ---
+## 🗺️ Roadmap
 
+- ✅ Sprint 1 — Project Foundation
+- ✅ Sprint 2.1 — User Registration
+- ⏳ Sprint 2.2 — User Login
+- ⏳ Sprint 2.3 — JWT Authentication
+- ⏳ Sprint 3 — Incident Reporting
+- ⏳ Sprint 4 — Interactive Maps
+- ⏳ Sprint 5 — Real-time Tracking
+- ⏳ Sprint 6 — Dashboard & Analytics
+- ⏳ Sprint 7 — Production Deployment
 ## 📄 License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
