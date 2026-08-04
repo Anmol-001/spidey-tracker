@@ -1,9 +1,9 @@
 import http from 'http';
 import { app } from './app.js';
-import { config } from './config/config.js';
-import { logger } from './config/logger.js';
-import { database } from './config/database.js';
-import { socketManager } from './socket/socket.server.js';
+import { config } from './shared/config/config.js';
+import { logger } from './shared/config/logger.js';
+import { database } from './shared/config/database.js';
+import { socketManager } from './shared/socket/socket.server.js';
 
 const httpServer = http.createServer(app);
 

@@ -1,4 +1,4 @@
-import { ApiResponse } from '../types/index.js';
+import { ApiResponse } from '../types/api.types.js';
 
 /**
  * Utility helper to build standardized success API responses.

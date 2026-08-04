@@ -1,4 +1,4 @@
-import { HealthStatusData } from '../types/index.js';
+import { HealthStatusData } from './health.types.js';
 
 export interface IHealthService {
   checkHealth: () => Promise<HealthStatusData>;

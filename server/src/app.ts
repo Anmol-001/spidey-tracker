@@ -4,10 +4,10 @@ import cors from 'cors';
 import compression from 'compression';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import { config } from './config/config.js';
-import { notFoundHandler } from './middleware/notFound.js';
-import { errorHandler } from './middleware/errorHandler.js';
-import { healthRouter } from './routes/health.route.js';
+import { config } from './shared/config/config.js';
+import { notFoundHandler } from './shared/middleware/notFound.js';
+import { errorHandler } from './shared/middleware/errorHandler.js';
+import { healthRouter } from './modules/health/health.route.js';
 import { apiRouter } from './routes/index.js';
 
 export function createApp(): Express {

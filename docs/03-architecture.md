@@ -13,14 +13,15 @@ spidey-tracker/
 ├── design/                   # UI mockups, assets, and design system
 ├── server/                   # Domain-agnostic Express backend
 │   ├── src/
-│   │   ├── config/           # Zod config, logger, database manager
-│   │   ├── controllers/      # HTTP request controllers
-│   │   ├── middleware/       # Error handling, validation, notFound
-│   │   ├── routes/           # Express route definitions
-│   │   ├── services/         # Core business logic implementations
-│   │   ├── socket/           # Real-time WebSocket gateway
-│   │   ├── types/            # TypeScript contracts and DTOs
-│   │   ├── utils/            # ApiError, ApiResponse helpers
+│   │   ├── modules/          # Feature-based domain modules
+│   │   │   └── health/       # Health telemetry module (controller, route, service, types)
+│   │   ├── shared/           # Cross-cutting infrastructure & utilities
+│   │   │   ├── config/       # Zod config, logger, database manager
+│   │   │   ├── middleware/   # Error handling, validation, notFound
+│   │   │   ├── socket/       # Real-time WebSocket gateway
+│   │   │   ├── types/        # Global API contracts & DTOs
+│   │   │   └── utils/        # ApiError, ApiResponse helpers
+│   │   ├── routes/           # Versioned API route aggregators (/api/v1)
 │   │   ├── app.ts            # Express app assembly
 │   │   └── server.ts         # Server bootstrapper & lifecycle
 │   ├── package.json

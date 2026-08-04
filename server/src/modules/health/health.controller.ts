@@ -1,9 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import {
-  IHealthService,
-  healthService as defaultHealthService,
-} from '../services/health.service.js';
-import { successResponse } from '../utils/apiResponse.js';
+import { IHealthService, healthService as defaultHealthService } from './health.service.js';
+import { successResponse } from '../../shared/utils/apiResponse.js';
 
 export class HealthController {
   private service: IHealthService;
