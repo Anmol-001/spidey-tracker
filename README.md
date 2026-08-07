@@ -8,123 +8,173 @@ A production-grade, full-stack MERN monorepo sighting and incident tracking plat
 
 ---
 
-## 🏛️ System Architecture
+# 🏛️ System Architecture
 
 Spidey Tracker is organized as an **npm workspaces monorepo**:
 
-```
+```text
 SpideyTracker/
-├── .ai/             # AI context, frontend/backend architecture, & review standards
+├── .ai/             # AI context, frontend/backend architecture & review standards
 ├── .github/         # Issue and PR templates
 ├── client/          # React 18 + Vite + TypeScript + Tailwind CSS frontend
-├── design/          # Design system, wireframes, mockups, logos, and assets
-├── docs/            # Standardized documentation (PRD, SRS, Architecture, DB, API, Roadmap)
+├── design/          # Design system, wireframes, mockups, logos and assets
+├── docs/            # PRD, SRS, Architecture, Database, API, Roadmap & Testing
 ├── server/          # Node.js + Express + TypeScript + MongoDB backend
-├── package.json     # Monorepo root workspace orchestrator
-└── tsconfig.base.json # Shared strict TypeScript configuration
+├── package.json     # Monorepo workspace orchestrator
+└── tsconfig.base.json
 ```
 
 ---
 
-## 📚 Documentation
+# 📚 Documentation
 
-Detailed documentation is available in the [`docs/`](docs/) directory:
+Detailed project documentation is available inside the **docs/** directory.
 
-- [01 - Product Requirements Document (PRD)](docs/01-prd.md)
-- [02 - Software Requirements Specification (SRS)](docs/02-srs.md)
-- [03 - Clean Architecture & System Design](docs/03-architecture.md)
-- [04 - Database Design & Models](docs/04-database.md)
-- [05 - API Specification & Standards](docs/05-api.md)
-- [06 - Project Milestone Roadmap](docs/06-roadmap.md)
-- [07 - Testing Strategy & QA](docs/07-testing.md)
+- Product Requirements Document (PRD)
+- Software Requirements Specification (SRS)
+- Clean Architecture
+- Database Design
+- API Specification
+- Project Roadmap
+- Testing Strategy
 
 ---
-## ✨ Current Features
 
-### Backend
+# ✨ Current Features
 
-- Health monitoring endpoints
-- User registration
-- Password hashing with bcrypt
+## Backend
+
+### Core Infrastructure
+
+- Express + TypeScript backend
+- MongoDB Atlas integration
+- Strict TypeScript configuration
 - Zod request validation
-- MongoDB persistence
-- Duplicate email detection
+- Standardized API response envelopes
+- Centralized error handling
+- Structured logging
+- Health monitoring endpoints
+
+### Authentication
+
+- User Registration
+- User Login
+- Password hashing with bcryptjs
+- JWT Access Token generation
+- JWT Authentication Middleware
+- Bearer Token authentication
+- Protected API routes
+- Authenticated user endpoint (`GET /api/v1/auth/me`)
 - Duplicate username detection
-- Standardized API responses
+- Duplicate email detection
 
-### Frontend
+### Code Quality
 
-- React + Vite dashboard
+- ESLint
+- Prettier
+- Husky
+- lint-staged
+- Strict typing
+- Layered architecture (Controller → Service → Model)
+
+---
+
+## Frontend
+
+- React 18 + Vite
+- TypeScript
+- Tailwind CSS
+- Cyberpunk-inspired dashboard
 - Health status indicator
-- Cyberpunk-inspired UI foundation
 
-## 🚀 Quick Start
+---
 
-### Prerequisites
+# 🚀 Quick Start
 
-- **Node.js**: `v20.x` or `v22.x` (LTS recommended)
-- **npm**: `v10.x` or `v11.x`
-- **MongoDB**: MongoDB Atlas (recommended) or a local MongoDB instance
+## Prerequisites
 
-### Installation
+- Node.js **20.x** or **22.x**
+- npm **10.x** or newer
+- MongoDB Atlas (recommended) or local MongoDB
+
+---
+
+## Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/spideytracker/spideytracker.git
+git clone https://github.com/Anmol-001/spidey-tracker.git
+
 cd SpideyTracker
 
-# Install dependencies across all workspaces
 npm install
 ```
 
-### Environment Setup
+---
 
-Copy example environments:
+## Environment Setup
 
 ```bash
-# Server configuration
 cp server/.env.example server/.env
 
-# Client configuration
 cp client/.env.example client/.env
 ```
 
-### Running Locally
+Configure the server environment variables:
+
+```env
+PORT=5000
+
+MONGODB_URI=your_mongodb_connection_string
+
+JWT_ACCESS_SECRET=your_secure_secret
+
+JWT_ACCESS_EXPIRES_IN=15m
+```
+
+---
+
+## Running the Project
 
 ```bash
-# Start both client and server concurrently
 npm run dev
+```
 
-# Start only server (port 5000)
+or individually
+
+```bash
 npm run dev:server
 
-# Start only client (port 5173)
 npm run dev:client
 ```
 
 ---
 
-## 🛠️ Monorepo Scripts
+# 🛠️ Available Scripts
 
-| Command                | Description                                                   |
-| :--------------------- | :------------------------------------------------------------ |
-| `npm run dev`          | Start both client and server in development mode concurrently |
-| `npm run build`        | Build both client and server for production                   |
-| `npm run type-check`   | Execute TypeScript strict compiler check across all packages  |
-| `npm run lint`         | Run ESLint across monorepo                                    |
-| `npm run lint:fix`     | Automatically fix ESLint violations across monorepo           |
-| `npm run format`       | Run Prettier across all files                                 |
-| `npm run format:check` | Verify code formatting compliance with Prettier               |
+| Command              | Description             |
+| -------------------- | ----------------------- |
+| npm run dev          | Start client and server |
+| npm run dev:server   | Start backend only      |
+| npm run dev:client   | Start frontend only     |
+| npm run build        | Build all workspaces    |
+| npm run type-check   | TypeScript validation   |
+| npm run lint         | ESLint                  |
+| npm run lint:fix     | Fix ESLint issues       |
+| npm run format       | Format using Prettier   |
+| npm run format:check | Verify formatting       |
 
 ---
 
-## 📡 API Specification (Sprint 1)
+# 📡 API Endpoints
 
-### `GET /health` & `GET /api/v1/health`
+## Health
 
-Returns operational telemetry confirming the backend server status.
+| Method | Endpoint         |
+| ------ | ---------------- |
+| GET    | `/health`        |
+| GET    | `/api/v1/health` |
 
-- **Response Format**:
+Returns
 
 ```json
 {
@@ -135,69 +185,129 @@ Returns operational telemetry confirming the backend server status.
   }
 }
 ```
-### `POST /api/v1/auth/register`
-
-Registers a new user account.
-
-**Request Body**
-
-```json
-{
-  "username": "PeterParker",
-  "email": "peter@example.com",
-  "password": "Spider@123"
-}
-```
-
-**Success Response (201)**
-
-```json
-{
-  "success": true,
-  "message": "User registered successfully",
-  "data": {
-    "id": "...",
-    "username": "PeterParker",
-    "email": "peter@example.com",
-    "createdAt": "...",
-    "updatedAt": "..."
-  }
-}
-```
-
-**Validation**
-
-- Username: 3–30 characters
-- Email: Valid email format
-- Password: Minimum 8 characters with uppercase, lowercase, number, and special character
-
-**Possible Responses**
-
-- 201 Created
-- 400 Bad Request
-- 409 Conflict
 
 ---
 
-## 🛡️ Coding Standards & Invariants
+## Authentication
 
-- **Zero Any Policy**: Strict TypeScript compilation with `noImplicitAny: true`.
-- **Clean Layered Architecture**: Controllers $\rightarrow$ Services $\rightarrow$ Data Access.
-- **Consistent Response Envelopes**: All endpoints adhere to `{ success, message, data?, error? }`.
-- **Domain-Agnostic Backend**: Backend contains zero hard-coded Spider-Man domain logic.
+### Register
+
+```http
+POST /api/v1/auth/register
+```
+
+Registers a new user.
 
 ---
-## 🗺️ Roadmap
 
-- ✅ Sprint 1 — Project Foundation
-- ✅ Sprint 2.1 — User Registration
-- ⏳ Sprint 2.2 — User Login
-- ⏳ Sprint 2.3 — JWT Authentication
-- ⏳ Sprint 3 — Incident Reporting
-- ⏳ Sprint 4 — Interactive Maps
-- ⏳ Sprint 5 — Real-time Tracking
-- ⏳ Sprint 6 — Dashboard & Analytics
-- ⏳ Sprint 7 — Production Deployment
-## 📄 License
+### Login
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+```http
+POST /api/v1/auth/login
+```
+
+Authenticates a user and returns a JWT access token.
+
+---
+
+### Current Authenticated User
+
+```http
+GET /api/v1/auth/me
+```
+
+Protected endpoint.
+
+Requires
+
+```text
+Authorization: Bearer <access_token>
+```
+
+Returns the authenticated user's identity.
+
+---
+
+# 🔒 Authentication Flow
+
+```text
+Register
+      │
+      ▼
+Login
+      │
+      ▼
+JWT Access Token
+      │
+      ▼
+Authorization: Bearer <token>
+      │
+      ▼
+authenticateUser Middleware
+      │
+      ▼
+req.user
+      │
+      ▼
+Protected Controllers
+```
+
+---
+
+# 🛡️ Coding Standards
+
+- Strict TypeScript (`noImplicitAny`)
+- Layered Architecture (Controller → Service → Model)
+- Domain-agnostic backend
+- Standardized API response envelopes
+- Reusable middleware
+- Centralized error handling
+- JWT-based authentication
+
+---
+
+# 🧪 Quality Assurance
+
+Every sprint undergoes:
+
+- Functional testing
+- Regression testing
+- API testing using Postman
+- JWT validation
+- TypeScript compilation
+- ESLint verification
+- Prettier verification
+
+---
+
+# 🗺️ Project Roadmap
+
+## ✅ Completed
+
+- Sprint 1 – Project Foundation
+- Sprint 1.1 – Architecture Cleanup
+- Sprint 2.1 – User Registration
+- Sprint 2.2 – User Login & JWT Authentication
+- Sprint 2.3 – JWT Authentication Middleware
+
+## 🚧 In Progress
+
+- Sprint 2.4 – Current User Profile
+
+## 📅 Planned
+
+- Sprint 2.5 – Role-Based Authorization
+- Sprint 3 – Incident Management
+- Sprint 4 – File Uploads
+- Sprint 5 – Interactive Maps
+- Sprint 6 – Real-Time Tracking (Socket.IO)
+- Sprint 7 – Dashboard & Analytics
+- Sprint 8 – Production Deployment
+
+---
+
+# 📄 License
+
+This project is licensed under the MIT License.
+
+See the **LICENSE** file for details.

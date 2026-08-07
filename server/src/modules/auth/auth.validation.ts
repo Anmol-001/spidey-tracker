@@ -37,3 +37,18 @@ export const registerSchema = z.object({
       'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
     ),
 });
+
+/**
+ * Validation schema for user login request body
+ */
+export const loginSchema = z.object({
+  email: z
+    .string({ required_error: 'Email is required' })
+    .trim()
+    .toLowerCase()
+    .email('Invalid email address format'),
+  password: z
+    .string({ required_error: 'Password is required' })
+    .trim()
+    .min(1, 'Password is required'),
+});

@@ -1,7 +1,8 @@
 import bcrypt from 'bcryptjs';
 import { User } from '../user/user.model.js';
 import { ApiError } from '../../shared/utils/apiError.js';
-import type { RegisterInput, RegisteredUser } from './auth.types.js';
+import { generateAccessToken } from '../../shared/utils/jwt.util.js';
+import type { LoginInput, LoginResponse, RegisterInput, RegisteredUser } from './auth.types.js';
 
 /**
  * Number of salt rounds for bcrypt password hashing
@@ -107,6 +108,48 @@ export class AuthService {
 
       throw new Error('An unexpected error occurred during user registration.');
     }
+  }
+
+  /**
+   * Authenticates user with credentials and issues access token
+   *
+   * @param input - Login credentials containing email and password
+   * @returns Explicitly constructed login response with access token and user profile
+   */
+  public async login(input: LoginInput): Promise<LoginResponse> {
+    const email = input.email.trim().toLowerCase();
+
+    // 1. Lookup user by normalized email and include passwordHash
+    const user = await User.findOne({ email }).select('+passwordHash').exec();
+
+    if (!user) {
+      throw new ApiError(401, 'Invalid email or password.', 'UNAUTHORIZED');
+    }
+
+    // 2. Verify password
+    const isPasswordValid = await bcrypt.compare(input.password, user.passwordHash);
+
+    if (!isPasswordValid) {
+      throw new ApiError(401, 'Invalid email or password.', 'UNAUTHORIZED');
+    }
+
+    // 3. Generate access token
+    const accessToken = generateAccessToken({
+      sub: user._id.toString(),
+      email: user.email,
+    });
+
+    // 4. Return explicitly constructed response
+    return {
+      accessToken,
+      user: {
+        id: user._id.toString(),
+        username: user.username,
+        email: user.email,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+    };
   }
 }
 

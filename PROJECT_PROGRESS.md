@@ -14,18 +14,18 @@
 
 # Sprint Progress
 
-| Sprint | Status | Description |
-|---------|--------|-------------|
-| Sprint 1 | ✅ Complete | Project foundation, monorepo setup, health module, shared architecture |
-| Sprint 1.1 | ✅ Complete | Architectural refinement, cleanup, documentation improvements |
+| Sprint     | Status      | Description                                                            |
+| ---------- | ----------- | ---------------------------------------------------------------------- |
+| Sprint 1   | ✅ Complete | Project foundation, monorepo setup, health module, shared architecture |
+| Sprint 1.1 | ✅ Complete | Architectural refinement, cleanup, documentation improvements          |
 | Sprint 2.1 | ✅ Complete | User registration, authentication module, password hashing, validation |
-| Sprint 2.2 | 🚧 Next | User login and JWT authentication |
-| Sprint 2.3 | ⏳ Planned | Authentication middleware and protected routes |
-| Sprint 3 | ⏳ Planned | Incident reporting system |
-| Sprint 4 | ⏳ Planned | Interactive maps integration |
-| Sprint 5 | ⏳ Planned | Real-time tracking and Socket.IO |
-| Sprint 6 | ⏳ Planned | Dashboard and analytics |
-| Sprint 7 | ⏳ Planned | Production deployment |
+| Sprint 2.2 | 🚧 Next     | User login and JWT authentication                                      |
+| Sprint 2.3 | ⏳ Planned  | Authentication middleware and protected routes                         |
+| Sprint 3   | ⏳ Planned  | Incident reporting system                                              |
+| Sprint 4   | ⏳ Planned  | Interactive maps integration                                           |
+| Sprint 5   | ⏳ Planned  | Real-time tracking and Socket.IO                                       |
+| Sprint 6   | ⏳ Planned  | Dashboard and analytics                                                |
+| Sprint 7   | ⏳ Planned  | Production deployment                                                  |
 
 ---
 
