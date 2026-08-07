@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.0] - 2026-08-08 (Sprint 2.4 Current User Profile)
+
+### Added
+
+- Dedicated User module (`server/src/modules/user/`) for user profile operations.
+- User service (`user.service.ts`) with `getProfile` method retrieving user profiles by ID via lean MongoDB queries.
+- User controller (`user.controller.ts`) with `getCurrentUser` transport handler.
+- User router (`user.route.ts`) mounting `GET /me` protected by `authenticateUser` middleware.
+- Protected endpoint `GET /api/v1/users/me` returning sanitized user profiles.
+- User profile response DTO (`UserResponseDto`) with explicit exclusions for `passwordHash`, `__v`, and raw `_id`.
+
+### Changed
+
+- Mounted `userRouter` under `/users` in the versioned API router (`/api/v1/users`).
+- Decoupled user profile management from authentication endpoints.
+
+### Verified
+
+- `GET /api/v1/users/me` without Bearer token correctly returns `401 Unauthorized`.
+- `GET /api/v1/users/me` with invalid or expired token correctly returns `401 Unauthorized`.
+- `GET /api/v1/users/me` with valid Bearer token returns `200 OK` with sanitized user profile.
+- Registration, login, `/auth/me`, and health endpoint regression tests passed.
+- Strict TypeScript compilation (`type-check`), ESLint, and Prettier quality gates passed.
+
+---
+
 ## [2.3.0] - 2026-08-07 (Sprint 2.3 Authentication Middleware)
 
 ### Added

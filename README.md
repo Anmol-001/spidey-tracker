@@ -55,7 +55,7 @@ Detailed project documentation is available inside the **docs/** directory.
 - Structured logging
 - Health monitoring endpoints
 
-### Authentication
+### Authentication & User Profile
 
 - User Registration
 - User Login
@@ -64,7 +64,9 @@ Detailed project documentation is available inside the **docs/** directory.
 - JWT Authentication Middleware
 - Bearer Token authentication
 - Protected API routes
-- Authenticated user endpoint (`GET /api/v1/auth/me`)
+- Authenticated auth probe endpoint (`GET /api/v1/auth/me`)
+- Dedicated User Profile module (`GET /api/v1/users/me`)
+- Sanitized user profile DTO (`UserResponseDto`)
 - Duplicate username detection
 - Duplicate email detection
 
@@ -210,13 +212,13 @@ Authenticates a user and returns a JWT access token.
 
 ---
 
-### Current Authenticated User
+### Authenticated Identity Probe
 
 ```http
 GET /api/v1/auth/me
 ```
 
-Protected endpoint.
+Protected test endpoint verifying token authentication.
 
 Requires
 
@@ -224,7 +226,41 @@ Requires
 Authorization: Bearer <access_token>
 ```
 
-Returns the authenticated user's identity.
+---
+
+## User Profile
+
+### Get Current User Profile
+
+```http
+GET /api/v1/users/me
+```
+
+Protected endpoint returning the full, sanitized user profile from the database.
+
+Requires
+
+```text
+Authorization: Bearer <access_token>
+```
+
+Returns
+
+```json
+{
+  "success": true,
+  "message": "User profile retrieved successfully",
+  "data": {
+    "id": "66b1a2c3d4e5f6a7b8c9d0e1",
+    "username": "peterparker",
+    "email": "peter.parker@dailybugle.com",
+    "role": "citizen",
+    "isActive": true,
+    "createdAt": "2026-08-08T02:00:00.000Z",
+    "updatedAt": "2026-08-08T02:00:00.000Z"
+  }
+}
+```
 
 ---
 
@@ -249,7 +285,13 @@ authenticateUser Middleware
 req.user
       │
       ▼
-Protected Controllers
+Protected Controllers (e.g. UserController)
+      │
+      ▼
+User Service (getProfile)
+      │
+      ▼
+Sanitized DTO Response
 ```
 
 ---
@@ -289,14 +331,14 @@ Every sprint undergoes:
 - Sprint 2.1 – User Registration
 - Sprint 2.2 – User Login & JWT Authentication
 - Sprint 2.3 – JWT Authentication Middleware
+- Sprint 2.4 – Current User Profile Module
 
 ## 🚧 In Progress
 
-- Sprint 2.4 – Current User Profile
+- Sprint 2.5 – Role-Based Authorization
 
 ## 📅 Planned
 
-- Sprint 2.5 – Role-Based Authorization
 - Sprint 3 – Incident Management
 - Sprint 4 – File Uploads
 - Sprint 5 – Interactive Maps

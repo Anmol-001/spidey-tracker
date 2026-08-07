@@ -14,13 +14,15 @@ spidey-tracker/
 ├── server/                   # Domain-agnostic Express backend
 │   ├── src/
 │   │   ├── modules/          # Feature-based domain modules
-│   │   │   └── health/       # Health telemetry module (controller, route, service, types)
+│   │   │   ├── auth/         # Authentication module (controller, service, routes, validation, types)
+│   │   │   ├── health/       # Health telemetry module (controller, service, routes, types)
+│   │   │   └── user/         # User profile module (controller, service, routes, model, types, validation)
 │   │   ├── shared/           # Cross-cutting infrastructure & utilities
 │   │   │   ├── config/       # Zod config, logger, database manager
-│   │   │   ├── middleware/   # Error handling, validation, notFound
+│   │   │   ├── middleware/   # Error handling, validation, auth middleware (authenticateUser), notFound
 │   │   │   ├── socket/       # Real-time WebSocket gateway
-│   │   │   ├── types/        # Global API contracts & DTOs
-│   │   │   └── utils/        # ApiError, ApiResponse helpers
+│   │   │   ├── types/        # Global API contracts & express user augmentation
+│   │   │   └── utils/        # ApiError, ApiResponse, JWT utilities
 │   │   ├── routes/           # Versioned API route aggregators (/api/v1)
 │   │   ├── app.ts            # Express app assembly
 │   │   └── server.ts         # Server bootstrapper & lifecycle
@@ -55,8 +57,46 @@ spidey-tracker/
                                                [Controller]
                                                      │
                                                      ▼
-                                                [Service]
+                                                 [Service]
                                                      │
                                                      ▼
                                             [Database / Mongoose]
+```
+
+---
+
+## 3. Authenticated User Profile Request Flow (Sprint 2.4)
+
+```text
+[Client Request: GET /api/v1/users/me]
+                │
+                │ (Headers: Authorization: Bearer <JWT>)
+                ▼
+[authenticateUser Middleware]
+                │
+                ├── If missing / invalid / expired token ──► HTTP 401 Unauthorized
+                │
+                └── If valid token ──► Populates req.user ({ id, email })
+                                              │
+                                              ▼
+                                 [User Module Router (user.route.ts)]
+                                              │
+                                              ▼
+                                 [User Controller (user.controller.ts)]
+                                              │
+                                              │ Calls userService.getProfile(req.user.id)
+                                              ▼
+                                 [User Service (user.service.ts)]
+                                              │
+                                              │ User.findById(userId).select(...).lean()
+                                              ▼
+                                 [MongoDB Database]
+                                              │
+                                              │ Returns user document
+                                              ▼
+                                 [Sanitized UserResponseDto]
+                                              │
+                                              │ Excludes passwordHash, __v, and raw _id
+                                              ▼
+                                 [HTTP 200 OK Response Envelope]
 ```
