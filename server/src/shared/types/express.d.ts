@@ -1,4 +1,4 @@
-export {};
+import { UserRole } from '../../modules/user/user.types.js';
 
 declare global {
   namespace Express {
@@ -7,6 +7,7 @@ declare global {
         id: string;
         username: string;
         email: string;
+        role: UserRole;
       };
     }
   }

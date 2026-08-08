@@ -32,7 +32,7 @@ export const authenticateUser = async (
       throw new ApiError(401, 'Unauthorized', 'UNAUTHORIZED');
     }
 
-    const user = await User.findById(payload.sub).select('_id username email').lean().exec();
+    const user = await User.findById(payload.sub).select('_id username email role').lean().exec();
 
     if (!user) {
       throw new ApiError(401, 'Unauthorized', 'UNAUTHORIZED');
@@ -42,6 +42,7 @@ export const authenticateUser = async (
       id: user._id.toString(),
       username: user.username,
       email: user.email,
+      role: user.role,
     };
 
     next();
