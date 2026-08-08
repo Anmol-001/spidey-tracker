@@ -224,3 +224,29 @@ interface ApiResponse<T = unknown> {
   }
 }
 ```
+
+---
+
+## 6. Role-Based Access Control (RBAC)
+
+Role-based authorization is enforced declaratively across protected routes via the `authorizeRoles(...allowedRoles)` middleware factory.
+
+### 6.1 Supported Roles
+
+- `citizen` — Standard user role with permissions to report sightings/incidents and view public data.
+- `responder` — Emergency response personnel authorized to triage and update incident statuses.
+- `admin` — System administrator with complete operational and administrative privileges.
+
+### 6.2 Error Envelope for Forbidden Requests (`403 Forbidden`)
+
+When an authenticated user attempts to access an endpoint requiring a higher privilege level, the server rejects the request with HTTP `403 Forbidden`:
+
+```json
+{
+  "success": false,
+  "message": "Forbidden: Insufficient permissions",
+  "error": {
+    "code": "FORBIDDEN"
+  }
+}
+```

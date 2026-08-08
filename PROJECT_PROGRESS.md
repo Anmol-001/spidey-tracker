@@ -8,7 +8,7 @@
 
 **Development Methodology:** Sprint-Based Development
 
-**Current Status:** Sprint 2.3 Complete ✅
+**Current Status:** Sprint 2.5 Complete ✅
 
 ---
 
@@ -21,9 +21,9 @@
 | Sprint 2.1 | ✅ Complete | User registration, authentication module, password hashing, validation           |
 | Sprint 2.2 | ✅ Complete | User login, JWT access token generation, login validation, secure authentication |
 | Sprint 2.3 | ✅ Complete | JWT authentication middleware, protected routes, authenticated user endpoint     |
-| Sprint 2.4 | 🚧 Next     | Current authenticated user profile endpoint                                      |
-| Sprint 2.5 | ⏳ Planned  | Role-based authorization                                                         |
-| Sprint 3   | ⏳ Planned  | Incident reporting system                                                        |
+| Sprint 2.4 | ✅ Complete | User profile module, service, controller, routes, GET /api/v1/users/me, DTO      |
+| Sprint 2.5 | ✅ Complete | Role-based authorization middleware (authorizeRoles), role-aware request context |
+| Sprint 3   | 🚧 Next     | Incident reporting system                                                        |
 | Sprint 4   | ⏳ Planned  | File uploads & interactive maps                                                  |
 | Sprint 5   | ⏳ Planned  | Real-time tracking with Socket.IO                                                |
 | Sprint 6   | ⏳ Planned  | Dashboard, analytics & administration                                            |
@@ -46,7 +46,7 @@
 - ✅ Zod request validation
 - ✅ Feature-based architecture
 
-### Authentication
+### Authentication & Authorization
 
 - ✅ User registration
 - ✅ User login
@@ -55,11 +55,21 @@
 - ✅ Duplicate username detection
 - ✅ JWT access token generation
 - ✅ JWT verification
-- ✅ JWT authentication middleware
+- ✅ JWT authentication middleware (`authenticateUser`)
 - ✅ Bearer token authentication
 - ✅ Protected API routes
-- ✅ Authenticated user endpoint (`GET /api/v1/auth/me`)
-- ✅ Express Request type augmentation (`req.user`)
+- ✅ Authenticated user identity probe (`GET /api/v1/auth/me`)
+- ✅ Express Request type augmentation (`req.user` with `id`, `username`, `email`, `role`)
+- ✅ Role-based authorization middleware (`authorizeRoles`)
+- ✅ Granular role access control (`citizen`, `responder`, `admin`)
+- ✅ Standardized `401 Unauthorized` and `403 Forbidden` error handling
+
+### User Profile Module
+
+- ✅ Dedicated User profile module (`server/src/modules/user/`)
+- ✅ User profile endpoint (`GET /api/v1/users/me`)
+- ✅ Sanitized user profile DTO (`UserResponseDto`)
+- ✅ Lean MongoDB profile retrieval excluding sensitive fields
 
 ### Quality Assurance
 
@@ -68,6 +78,7 @@
 - ✅ Prettier formatting
 - ✅ Postman API testing
 - ✅ Authentication regression testing
+- ✅ Role-based authorization testing
 
 ---
 
@@ -84,17 +95,16 @@
 
 # Current Milestone
 
-## Sprint 2.4 — Current User Profile
+## Sprint 3 — Incident Management
 
 ### Planned Deliverables
 
-- Authenticated user profile endpoint (`GET /api/v1/users/me`)
-- Dedicated User module
-- User service layer
-- User controller
-- Profile retrieval from MongoDB
-- Standardized authenticated profile response
-- Complete QA & documentation
+- Incident domain module (`server/src/modules/incident/`)
+- Incident schema and model with geospatial GeoJSON coordinates
+- Incident reporting and CRUD endpoints (`POST /api/v1/incidents`, `GET /api/v1/incidents`)
+- Role-based incident access rules (e.g. responders and admins)
+- Incident status workflow (e.g. `reported` → `investigating` → `resolved`)
+- Postman test suite and regression testing
 
 ---
 
@@ -103,8 +113,8 @@
 | Module              |                  Progress |
 | ------------------- | ------------------------: |
 | Foundation          | ████████████████████ 100% |
-| Authentication      |  ████████████████░░░░ 75% |
-| Authorization       |   ░░░░░░░░░░░░░░░░░░░░ 0% |
+| Authentication      | ████████████████████ 100% |
+| Authorization       | ████████████████████ 100% |
 | Incident Management |   ░░░░░░░░░░░░░░░░░░░░ 0% |
 | Maps & Geolocation  |   ░░░░░░░░░░░░░░░░░░░░ 0% |
 | Real-Time Features  |   ░░░░░░░░░░░░░░░░░░░░ 0% |
@@ -113,4 +123,4 @@
 
 ---
 
-**Last Updated:** 2026-08-07
+**Last Updated:** 2026-08-08

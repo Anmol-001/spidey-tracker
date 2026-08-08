@@ -55,20 +55,29 @@ Detailed project documentation is available inside the **docs/** directory.
 - Structured logging
 - Health monitoring endpoints
 
-### Authentication & User Profile
+### Authentication & Authorization
 
 - User Registration
 - User Login
-- Password hashing with bcryptjs
+- Password hashing with bcryptjs (12 salt rounds)
 - JWT Access Token generation
-- JWT Authentication Middleware
+- JWT Authentication Middleware (`authenticateUser`)
+- Role-Based Authorization Middleware (`authorizeRoles`)
+- Role-aware request context (`req.user.role`)
 - Bearer Token authentication
-- Protected API routes
+- Protected API routes with granular role-based access control
 - Authenticated auth probe endpoint (`GET /api/v1/auth/me`)
 - Dedicated User Profile module (`GET /api/v1/users/me`)
 - Sanitized user profile DTO (`UserResponseDto`)
 - Duplicate username detection
 - Duplicate email detection
+
+### Security Features
+
+- Password hashes strictly excluded from all API responses and database transforms
+- JWT secrets and expiration fully environment-driven
+- Real-time role verification directly sourced from MongoDB during authentication
+- Fail-safe authorization error handling returning standardized `401 Unauthorized` and `403 Forbidden` envelopes
 
 ### Code Quality
 
@@ -264,7 +273,7 @@ Returns
 
 ---
 
-# 🔒 Authentication Flow
+# 🔒 Authentication & Authorization Flow
 
 ```text
 Register
@@ -279,10 +288,10 @@ JWT Access Token
 Authorization: Bearer <token>
       │
       ▼
-authenticateUser Middleware
+authenticateUser Middleware (verifies token, loads role from DB, populates req.user)
       │
       ▼
-req.user
+authorizeRoles(...allowedRoles) Middleware (validates req.user.role)
       │
       ▼
 Protected Controllers (e.g. UserController)
@@ -305,6 +314,7 @@ Sanitized DTO Response
 - Reusable middleware
 - Centralized error handling
 - JWT-based authentication
+- Role-based authorization
 
 ---
 
@@ -316,6 +326,7 @@ Every sprint undergoes:
 - Regression testing
 - API testing using Postman
 - JWT validation
+- Role-based authorization verification
 - TypeScript compilation
 - ESLint verification
 - Prettier verification
@@ -332,14 +343,14 @@ Every sprint undergoes:
 - Sprint 2.2 – User Login & JWT Authentication
 - Sprint 2.3 – JWT Authentication Middleware
 - Sprint 2.4 – Current User Profile Module
+- Sprint 2.5 – Role-Based Authorization
 
 ## 🚧 In Progress
 
-- Sprint 2.5 – Role-Based Authorization
+- Sprint 3 – Incident Management
 
 ## 📅 Planned
 
-- Sprint 3 – Incident Management
 - Sprint 4 – File Uploads
 - Sprint 5 – Interactive Maps
 - Sprint 6 – Real-Time Tracking (Socket.IO)

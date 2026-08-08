@@ -19,9 +19,9 @@ spidey-tracker/
 │   │   │   └── user/         # User profile module (controller, service, routes, model, types, validation)
 │   │   ├── shared/           # Cross-cutting infrastructure & utilities
 │   │   │   ├── config/       # Zod config, logger, database manager
-│   │   │   ├── middleware/   # Error handling, validation, auth middleware (authenticateUser), notFound
+│   │   │   ├── middleware/   # Error handling, validation, auth (authenticateUser), RBAC (authorizeRoles), notFound
 │   │   │   ├── socket/       # Real-time WebSocket gateway
-│   │   │   ├── types/        # Global API contracts & express user augmentation
+│   │   │   ├── types/        # Global API contracts & express user augmentation (req.user with role)
 │   │   │   └── utils/        # ApiError, ApiResponse, JWT utilities
 │   │   ├── routes/           # Versioned API route aggregators (/api/v1)
 │   │   ├── app.ts            # Express app assembly
@@ -45,30 +45,39 @@ spidey-tracker/
 
 ---
 
-## 2. Unidirectional Data Flow
+## 2. Unidirectional Data Flow & Request Pipeline
 
 ```
-[Client SPA] ──(HTTP/WS)──> [Express App] ──> [Middleware Stack]
-                                                     │
-                                                     ▼
-                                              [Route Handler]
-                                                     │
-                                                     ▼
-                                               [Controller]
-                                                     │
-                                                     ▼
-                                                 [Service]
-                                                     │
-                                                     ▼
-                                            [Database / Mongoose]
+[Client SPA] ──(HTTP/WS)──> [Express App] ──> [authenticateUser] ──> [authorizeRoles]
+                                                                            │
+                                                                            ▼
+                                                                     [Route Handler]
+                                                                            │
+                                                                            ▼
+                                                                      [Controller]
+                                                                            │
+                                                                            ▼
+                                                                        [Service]
+                                                                            │
+                                                                            ▼
+                                                                   [Database / Mongoose]
 ```
 
 ---
 
-## 3. Authenticated User Profile Request Flow (Sprint 2.4)
+## 3. Separation of Authentication vs. Authorization
+
+| Layer              | Component                         | Responsibility                                                                                                                        | Failure Response   |
+| :----------------- | :-------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------ | :----------------- |
+| **Authentication** | `authenticateUser`                | Verifies identity via JWT Bearer token and attaches database-verified user profile (`id`, `username`, `email`, `role`) to `req.user`. | `401 Unauthorized` |
+| **Authorization**  | `authorizeRoles(...allowedRoles)` | Inspects `req.user.role` against permissible roles for the requested endpoint. Zero database lookups; purely policy enforcement.      | `403 Forbidden`    |
+
+---
+
+## 4. Protected Request Flow (Authentication & Authorization)
 
 ```text
-[Client Request: GET /api/v1/users/me]
+[Client Request: HTTP Method + Path]
                 │
                 │ (Headers: Authorization: Bearer <JWT>)
                 ▼
@@ -76,27 +85,30 @@ spidey-tracker/
                 │
                 ├── If missing / invalid / expired token ──► HTTP 401 Unauthorized
                 │
-                └── If valid token ──► Populates req.user ({ id, email })
+                └── If valid token ──► Queries DB & populates req.user ({ id, username, email, role })
                                               │
                                               ▼
-                                 [User Module Router (user.route.ts)]
+                                 [authorizeRoles(...allowedRoles) Middleware]
                                               │
-                                              ▼
-                                 [User Controller (user.controller.ts)]
+                                              ├── If req.user.role NOT in allowedRoles ──► HTTP 403 Forbidden
                                               │
-                                              │ Calls userService.getProfile(req.user.id)
-                                              ▼
-                                 [User Service (user.service.ts)]
-                                              │
-                                              │ User.findById(userId).select(...).lean()
-                                              ▼
-                                 [MongoDB Database]
-                                              │
-                                              │ Returns user document
-                                              ▼
-                                 [Sanitized UserResponseDto]
-                                              │
-                                              │ Excludes passwordHash, __v, and raw _id
-                                              ▼
-                                 [HTTP 200 OK Response Envelope]
+                                              └── If authorized (or route is unrestricted)
+                                                            │
+                                                            ▼
+                                               [Domain Router (e.g. user.route.ts)]
+                                                            │
+                                                            ▼
+                                               [Controller (e.g. user.controller.ts)]
+                                                            │
+                                                            ▼
+                                               [Service Layer (e.g. user.service.ts)]
+                                                            │
+                                                            ▼
+                                               [MongoDB Database (Mongoose)]
+                                                            │
+                                                            ▼
+                                               [Sanitized Response DTO]
+                                                            │
+                                                            ▼
+                                               [HTTP 200/201 Success Response Envelope]
 ```

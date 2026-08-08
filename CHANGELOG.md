@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.5.0] - 2026-08-08 (Sprint 2.5 Role-Based Authorization)
+
+### Added
+
+- Reusable role-based authorization middleware.
+- Authorization based on user roles.
+- Role-aware authenticated request context.
+- Support for protecting routes using authorizeRoles(...allowedRoles).
+
+### Changed
+
+- Authentication middleware now attaches the authenticated user's role to req.user.
+- Authorization is separated cleanly from authentication.
+
+### Verified
+
+- Unauthorized requests return 401.
+- Authenticated users without required permissions return 403.
+- Authorized users access protected resources successfully.
+- TypeScript, ESLint, Prettier, build and Postman QA all passed.
+
+---
+
 ## [2.4.0] - 2026-08-08 (Sprint 2.4 Current User Profile)
 
 ### Added

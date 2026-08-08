@@ -56,26 +56,6 @@ export class AuthController {
       next(error);
     }
   };
-
-  /**
-   * Temporary test endpoint to verify admin role authorization
-   *
-   * @param req - Express Request containing authenticated admin user context
-   * @param res - Express Response returning HTTP 200 OK with authorization status
-   * @param next - Express NextFunction for forwarding unhandled errors
-   */
-  public adminTest = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      res.status(200).json(
-        successResponse('Admin authorization successful', {
-          authorized: true,
-          role: req.user?.role,
-        }),
-      );
-    } catch (error) {
-      next(error);
-    }
-  };
 }
 
 export const authController = new AuthController();

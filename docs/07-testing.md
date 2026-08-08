@@ -24,7 +24,26 @@
 
 ## 3. Sprint Verification Logs
 
-### 3.1 Sprint 2.4 — User Profile Module Verification
+### 3.1 Sprint 2.5 — Role-Based Authorization Verification
+
+| Category                 | Test Scenario                 | Request / Input                                                 | Expected Result                     |  Status   |
+| :----------------------- | :---------------------------- | :-------------------------------------------------------------- | :---------------------------------- | :-------: |
+| **Authentication Gate**  | Missing Authorization Token   | Protected route without `Authorization` header                  | `401 Unauthorized` (`UNAUTHORIZED`) | ✅ Passed |
+| **Authentication Gate**  | Invalid / Expired JWT         | Protected route with malformed Bearer token                     | `401 Unauthorized` (`UNAUTHORIZED`) | ✅ Passed |
+| **Role Authorization**   | Insufficient Role Permission  | Protected route with role not in `allowedRoles`                 | `403 Forbidden` (`FORBIDDEN`)       | ✅ Passed |
+| **Role Authorization**   | Authorized Role Match         | Protected route with matching allowed role                      | `200 OK` / Successful action        | ✅ Passed |
+| **Context Augmentation** | Role Attachment in `req.user` | Verified DB role projected directly on request                  | `req.user.role` populated correctly | ✅ Passed |
+| **Regression**           | User Profile Endpoint         | `GET /api/v1/users/me` with valid citizen/responder/admin token | `200 OK` with `UserResponseDto`     | ✅ Passed |
+| **Regression**           | Registration & Login          | `POST /api/v1/auth/register`, `POST /api/v1/auth/login`         | `201 Created` & `200 OK`            | ✅ Passed |
+| **Regression**           | Operational Health            | `GET /health`, `GET /api/v1/health`                             | `200 OK` (`{"status": "ok"}`)       | ✅ Passed |
+| **Static Quality Gate**  | Strict Type-Checking          | `npm run type-check --workspace=server`                         | 0 TypeScript compilation errors     | ✅ Passed |
+| **Static Quality Gate**  | Linting Standards             | `npm run lint --workspace=server`                               | 0 ESLint errors and 0 warnings      | ✅ Passed |
+| **Static Quality Gate**  | Code Formatting               | `npx prettier --check` across workspace                         | 100% compliant code style           | ✅ Passed |
+| **Build Gate**           | Monorepo Build                | `npm run build`                                                 | Clean production build              | ✅ Passed |
+
+---
+
+### 3.2 Sprint 2.4 — User Profile Module Verification
 
 | Category                | Test Scenario          | Request / Input                                                    | Expected Result                                        |  Status   |
 | :---------------------- | :--------------------- | :----------------------------------------------------------------- | :----------------------------------------------------- | :-------: |
