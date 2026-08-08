@@ -10,15 +10,15 @@ The MongoDB connection is encapsulated inside `server/src/config/database.ts`:
 
 ---
 
-## 2. Generic Entity Data Models (Planned for Sprint 2 & 3)
+## 2. Entity Data Models
 
 ### User Entity (Sprint 2)
 
 ```typescript
 interface IUser {
+  username: string;
   email: string;
   passwordHash: string;
-  name: string;
   role: 'citizen' | 'responder' | 'admin';
   isActive: boolean;
   createdAt: Date;
@@ -26,22 +26,20 @@ interface IUser {
 }
 ```
 
-### Sighting / Incident Entity (Sprint 3)
+### Incident Entity (Sprint 3.1 & 3.2)
 
 ```typescript
 interface IIncident {
   title: string;
   description: string;
-  category: string;
-  location: {
-    type: 'Point';
-    coordinates: [number, number]; // [longitude, latitude]
-    address?: string;
-  };
+  category: 'crime' | 'accident' | 'sighting' | 'hazard' | 'other';
+  latitude: number;
+  longitude: number;
+  address?: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  status: 'unverified' | 'verified' | 'resolving' | 'resolved' | 'dismissed';
-  reportedBy: mongoose.Types.ObjectId;
-  mediaUrls: string[];
+  status: 'open' | 'in_progress' | 'resolved';
+  createdBy: mongoose.Types.ObjectId;
+  assignedTo: mongoose.Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;
 }

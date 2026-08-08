@@ -227,17 +227,105 @@ interface ApiResponse<T = unknown> {
 
 ---
 
-## 6. Role-Based Access Control (RBAC)
+## 6. Incident Endpoints
+
+### 6.1 Create Incident
+
+- **Method**: `POST`
+- **Route**: `/api/v1/incidents`
+- **Purpose**: Creates and records a new incident in the system.
+- **Authentication**: Required (`authenticateUser` middleware)
+- **Request Headers**:
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <access_token>`
+- **Request Body**:
+
+```json
+{
+  "title": "Bank robbery in progress",
+  "description": "Armed robbery reported at Financial District branch.",
+  "category": "crime",
+  "latitude": 40.7128,
+  "longitude": -74.006,
+  "address": "123 Wall St, New York, NY"
+}
+```
+
+- **Backend-Managed Default Values**:
+  - `createdBy`: Derived from `req.user.id` (authenticated user).
+  - `status`: Automatically assigned to `"open"`.
+  - `severity`: Automatically assigned to `"medium"`.
+  - `assignedTo`: Automatically assigned to `null`.
+  - Clients cannot submit `status`, `severity`, `createdBy`, or `assignedTo`; payloads containing these fields are rejected by strict validation.
+
+- **Success Response `201 Created`**:
+
+```json
+{
+  "success": true,
+  "message": "Incident reported successfully",
+  "data": {
+    "id": "66b1a2c3d4e5f6a7b8c9d0e2",
+    "title": "Bank robbery in progress",
+    "description": "Armed robbery reported at Financial District branch.",
+    "category": "crime",
+    "severity": "medium",
+    "status": "open",
+    "latitude": 40.7128,
+    "longitude": -74.006,
+    "address": "123 Wall St, New York, NY",
+    "createdBy": "66b1a2c3d4e5f6a7b8c9d0e1",
+    "assignedTo": null,
+    "createdAt": "2026-08-08T15:00:00.000Z",
+    "updatedAt": "2026-08-08T15:00:00.000Z"
+  }
+}
+```
+
+- **Error Responses**:
+  - `400 Bad Request`: Validation failure (missing required fields, invalid category, coordinates out of range, or unauthorized/extra keys).
+
+```json
+{
+  "success": false,
+  "message": "Validation failed",
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "details": [
+      {
+        "field": "category",
+        "message": "Invalid category"
+      }
+    ]
+  }
+}
+```
+
+- `401 Unauthorized`: Missing, expired, malformed, or invalid Bearer token.
+
+```json
+{
+  "success": false,
+  "message": "Unauthorized",
+  "error": {
+    "code": "UNAUTHORIZED"
+  }
+}
+```
+
+---
+
+## 7. Role-Based Access Control (RBAC)
 
 Role-based authorization is enforced declaratively across protected routes via the `authorizeRoles(...allowedRoles)` middleware factory.
 
-### 6.1 Supported Roles
+### 7.1 Supported Roles
 
 - `citizen` — Standard user role with permissions to report sightings/incidents and view public data.
 - `responder` — Emergency response personnel authorized to triage and update incident statuses.
 - `admin` — System administrator with complete operational and administrative privileges.
 
-### 6.2 Error Envelope for Forbidden Requests (`403 Forbidden`)
+### 7.2 Error Envelope for Forbidden Requests (`403 Forbidden`)
 
 When an authenticated user attempts to access an endpoint requiring a higher privilege level, the server rejects the request with HTTP `403 Forbidden`:
 

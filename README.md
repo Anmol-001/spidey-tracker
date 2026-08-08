@@ -72,6 +72,15 @@ Detailed project documentation is available inside the **docs/** directory.
 - Duplicate username detection
 - Duplicate email detection
 
+### Incident Management
+
+- Incident domain module
+- Create Incident API (`POST /api/v1/incidents`)
+- Protected incident reporting for authenticated users
+- Strict Zod request validation for incident creation
+- Secure backend-managed incident defaults (`createdBy`, `status`, `severity`, `assignedTo`)
+- Incident persistence with MongoDB and optimized schema indexes
+
 ### Security Features
 
 - Password hashes strictly excluded from all API responses and database transforms
@@ -271,6 +280,63 @@ Returns
 }
 ```
 
+## Incident Management
+
+### Report Incident
+
+```http
+POST /api/v1/incidents
+```
+
+Protected endpoint to report a new incident.
+
+Requires
+
+```text
+Authorization: Bearer <access_token>
+```
+
+Request Body
+
+```json
+{
+  "title": "Bank robbery in progress",
+  "description": "Armed robbery reported at Financial District branch.",
+  "category": "crime",
+  "latitude": 40.7128,
+  "longitude": -74.006,
+  "address": "123 Wall St, New York, NY"
+}
+```
+
+Returns `201 Created`
+
+```json
+{
+  "success": true,
+  "message": "Incident reported successfully",
+  "data": {
+    "id": "66b1a2c3d4e5f6a7b8c9d0e2",
+    "title": "Bank robbery in progress",
+    "description": "Armed robbery reported at Financial District branch.",
+    "category": "crime",
+    "severity": "medium",
+    "status": "open",
+    "latitude": 40.7128,
+    "longitude": -74.006,
+    "address": "123 Wall St, New York, NY",
+    "createdBy": "66b1a2c3d4e5f6a7b8c9d0e1",
+    "assignedTo": null,
+    "createdAt": "2026-08-08T15:00:00.000Z",
+    "updatedAt": "2026-08-08T15:00:00.000Z"
+  }
+}
+```
+
+- **Authentication Requirement**: Valid Bearer token required for all roles (`citizen`, `responder`, `admin`).
+- **Validation Behavior**: Strict schema validation ensures coordinate bounds, required string lengths, valid categories, and rejects unauthorized properties (`status`, `severity`, `createdBy`, `assignedTo`).
+- **Default Backend Fields**: Automatically assigns `status = open`, `severity = medium`, `assignedTo = null`, and associates `createdBy` with the authenticated user ID.
+
 ---
 
 # 🔒 Authentication & Authorization Flow
@@ -294,10 +360,10 @@ authenticateUser Middleware (verifies token, loads role from DB, populates req.u
 authorizeRoles(...allowedRoles) Middleware (validates req.user.role)
       │
       ▼
-Protected Controllers (e.g. UserController)
+Protected Controllers (e.g. UserController, IncidentController)
       │
       ▼
-User Service (getProfile)
+Domain Services (e.g. userService, incidentService)
       │
       ▼
 Sanitized DTO Response
@@ -344,10 +410,12 @@ Every sprint undergoes:
 - Sprint 2.3 – JWT Authentication Middleware
 - Sprint 2.4 – Current User Profile Module
 - Sprint 2.5 – Role-Based Authorization
+- Sprint 3.1 – Incident Domain & Persistence Layer
+- Sprint 3.2 – Create Incident API
 
 ## 🚧 In Progress
 
-- Sprint 3 – Incident Management
+- Sprint 3.3 – Incident Retrieval APIs
 
 ## 📅 Planned
 

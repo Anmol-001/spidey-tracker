@@ -16,6 +16,7 @@ spidey-tracker/
 │   │   ├── modules/          # Feature-based domain modules
 │   │   │   ├── auth/         # Authentication module (controller, service, routes, validation, types)
 │   │   │   ├── health/       # Health telemetry module (controller, service, routes, types)
+│   │   │   ├── incident/     # Incident module (constants, types, model, dto, validation, service, controller, route)
 │   │   │   └── user/         # User profile module (controller, service, routes, model, types, validation)
 │   │   ├── shared/           # Cross-cutting infrastructure & utilities
 │   │   │   ├── config/       # Zod config, logger, database manager
@@ -112,3 +113,62 @@ spidey-tracker/
                                                             ▼
                                                [HTTP 200/201 Success Response Envelope]
 ```
+
+---
+
+## 5. Incident Module Architecture & Create Incident Flow
+
+### 5.1 Request Pipeline
+
+```text
+Client
+  │
+  ▼ (POST /api/v1/incidents with Bearer Token + Body)
+authenticateUser Middleware
+  │ (Validates JWT & populates req.user)
+  ▼
+validateRequest(createIncidentSchema)
+  │ (Strict Zod validation; rejects extra/unauthorized properties)
+  ▼
+IncidentController (createIncident)
+  │ (Extracts req.body and req.user.id; calls incidentService)
+  ▼
+IncidentService (createIncident)
+  │ (Applies server defaults: status = OPEN, severity = MEDIUM, assignedTo = null, createdBy = userId)
+  ▼
+Incident Model (Mongoose)
+  │ (Validates schema constraints & writes to MongoDB)
+  ▼
+MongoDB
+  │
+  ▼
+Sanitized IncidentResponseDto
+  │
+  ▼
+HTTP 201 Created (ApiResponse Envelope)
+```
+
+### 5.2 Separation of Responsibilities
+
+| Layer           | Component                                         | Responsibility                                                                                                                                                                                        |
+| :-------------- | :------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Validation**  | `incident.validation.ts` (`createIncidentSchema`) | Validates payload boundaries using Zod with `.strict()`. Rejects unknown/forbidden fields (`status`, `severity`, `createdBy`, `assignedTo`).                                                          |
+| **Controller**  | `incident.controller.ts` (`IncidentController`)   | Thin HTTP transport layer. Extracts request data, invokes `IncidentService`, formats response via `successResponse(res, 201, ...)`, and passes errors to `next(error)`. Contains zero business logic. |
+| **Service**     | `incident.service.ts` (`IncidentService`)         | Pure domain business logic. Completely independent of Express. Applies backend-controlled defaults, manages persistence transformations, and maps documents to `IncidentResponseDto`.                 |
+| **Persistence** | `incident.model.ts` (`Incident`)                  | Mongoose persistence layer with schema constraints, enum restrictions, timestamps, and database indexing.                                                                                             |
+
+### 5.3 Approved Business Rules & Ownership
+
+Clients reporting incidents **cannot** supply:
+
+- `status`
+- `severity`
+- `createdBy`
+- `assignedTo`
+
+These fields are strictly managed and assigned by the backend:
+
+- `createdBy` = `req.user.id` (derived from authenticated session)
+- `status` = `INCIDENT_STATUS.OPEN` (`"open"`)
+- `severity` = `INCIDENT_SEVERITY.MEDIUM` (`"medium"`)
+- `assignedTo` = `null`

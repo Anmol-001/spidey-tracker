@@ -24,7 +24,31 @@
 
 ## 3. Sprint Verification Logs
 
-### 3.1 Sprint 2.5 — Role-Based Authorization Verification
+### 3.1 Sprint 3.2 — Create Incident API Verification
+
+| Category                | Test Scenario                | Request / Input                                             | Expected Result                                               |  Status   |
+| :---------------------- | :--------------------------- | :---------------------------------------------------------- | :------------------------------------------------------------ | :-------: |
+| **Positive Flow**       | Successful Incident Creation | `POST /api/v1/incidents` with valid payload & Bearer token  | `201 Created` with full `IncidentResponseDto` envelope        | ✅ Passed |
+| **Authentication Gate** | Missing Authorization Header | `POST /api/v1/incidents` without Bearer token               | `401 Unauthorized` (`UNAUTHORIZED`)                           | ✅ Passed |
+| **Authentication Gate** | Invalid / Expired JWT        | `POST /api/v1/incidents` with malformed Bearer token        | `401 Unauthorized` (`UNAUTHORIZED`)                           | ✅ Passed |
+| **Validation Gate**     | Missing Required Fields      | `POST /api/v1/incidents` with empty body or missing fields  | `400 Bad Request` (`VALIDATION_ERROR`)                        | ✅ Passed |
+| **Validation Gate**     | Invalid Incident Category    | `POST /api/v1/incidents` with category not in enum          | `400 Bad Request` (`VALIDATION_ERROR`)                        | ✅ Passed |
+| **Validation Gate**     | Out-of-Bounds Coordinates    | `POST /api/v1/incidents` with lat > 90 or lng > 180         | `400 Bad Request` (`VALIDATION_ERROR`)                        | ✅ Passed |
+| **Validation Gate**     | Unknown Properties Rejected  | `POST /api/v1/incidents` sending `status` or `severity`     | `400 Bad Request` (`VALIDATION_ERROR`) due to `.strict()`     | ✅ Passed |
+| **Business Rule**       | Automated `createdBy`        | Verified against authenticated `req.user.id`                | `createdBy` matches token user ObjectId                       | ✅ Passed |
+| **Business Rule**       | Default `status`             | Verified on returned DTO and DB record                      | `status` equals `"open"` (`INCIDENT_STATUS.OPEN`)             | ✅ Passed |
+| **Business Rule**       | Default `severity`           | Verified on returned DTO and DB record                      | `severity` equals `"medium"` (`INCIDENT_SEVERITY.MEDIUM`)     | ✅ Passed |
+| **Business Rule**       | Default `assignedTo`         | Verified on returned DTO and DB record                      | `assignedTo` equals `null`                                    | ✅ Passed |
+| **Persistence**         | MongoDB Storage              | Database query check for created document                   | Document saved with correct fields, schema types & timestamps | ✅ Passed |
+| **Regression**          | Existing Modules             | Health, Auth (`register`, `login`, `me`), User (`users/me`) | All endpoints functioning normally with zero regressions      | ✅ Passed |
+| **Static Quality Gate** | Strict Type-Checking         | `npm run type-check --workspace=server`                     | 0 TypeScript compilation errors                               | ✅ Passed |
+| **Static Quality Gate** | Linting Standards            | `npm run lint --workspace=server`                           | 0 ESLint errors and 0 warnings                                | ✅ Passed |
+| **Static Quality Gate** | Code Formatting              | `npx prettier --check` across workspace                     | 100% compliant code style                                     | ✅ Passed |
+| **Build Gate**          | Monorepo Server Build        | `npm run build --workspace=server`                          | Clean production build                                        | ✅ Passed |
+
+---
+
+### 3.2 Sprint 2.5 — Role-Based Authorization Verification
 
 | Category                 | Test Scenario                 | Request / Input                                                 | Expected Result                     |  Status   |
 | :----------------------- | :---------------------------- | :-------------------------------------------------------------- | :---------------------------------- | :-------: |
@@ -43,7 +67,7 @@
 
 ---
 
-### 3.2 Sprint 2.4 — User Profile Module Verification
+### 3.3 Sprint 2.4 — User Profile Module Verification
 
 | Category                | Test Scenario          | Request / Input                                                    | Expected Result                                        |  Status   |
 | :---------------------- | :--------------------- | :----------------------------------------------------------------- | :----------------------------------------------------- | :-------: |

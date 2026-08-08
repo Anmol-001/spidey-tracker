@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.0] - 2026-08-08 (Sprint 3.2 Create Incident API)
+
+### Added
+
+- Incident creation endpoint.
+- Incident validation using Zod.
+- Incident controller.
+- Incident service.
+- Incident routing.
+- Protected incident reporting.
+- Incident DTOs.
+- Incident request validation.
+
+### Changed
+
+- API routing now includes Incident module.
+- Backend automatically assigns:
+  - createdBy
+  - status
+  - severity
+  - assignedTo
+
+### Security
+
+- Incident ownership derived from authenticated user.
+- Clients cannot submit:
+  - status
+  - severity
+  - createdBy
+  - assignedTo
+- Unknown request properties rejected through strict validation.
+
+### Verified
+
+- Successful incident creation.
+- Authentication enforcement.
+- Validation enforcement.
+- Backend-managed defaults.
+- MongoDB persistence.
+- TypeScript.
+- ESLint.
+- Prettier.
+- Production build.
+- Postman QA.
+
+---
+
 ## [2.5.0] - 2026-08-08 (Sprint 2.5 Role-Based Authorization)
 
 ### Added
