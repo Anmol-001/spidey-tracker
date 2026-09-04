@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.3.0] - 2026-09-04 (Sprint 3.3 Incident Retrieval & Query APIs)
+
+### Added
+
+- Paginated incident retrieval endpoint (`GET /api/v1/incidents`).
+- Incident detail retrieval endpoint (`GET /api/v1/incidents/:id`).
+- Incident query schema (`incidentQuerySchema`) with strict parameter validation and type coercion.
+- Incident ID parameter schema (`incidentIdParamSchema`) validating 24-character hex ObjectId format.
+- Incident pagination metadata DTO (`PaginationMetaDto`) and list response envelope DTO (`PaginatedIncidentsResponseDto`).
+- Incident service retrieval operations: `getIncidents` with lean execution and deterministic sorting (`{ createdAt: -1, _id: -1 }`), and `getIncidentById`.
+- Concurrent count and data query execution via `Promise.all`.
+
+### Changed
+
+- Incident router (`server/src/modules/incident/incident.route.ts`) now mounts `GET /` and `GET /:id` behind authentication middleware.
+
+### Security
+
+- Full authentication enforcement via `authenticateUser` across all retrieval routes.
+- Whitelisted query filter mapping preventing arbitrary MongoDB query injection.
+- Unrecognized query parameters rejected through Zod `.strict()`.
+- Explicit sanitized DTO serialization preventing leakage of Mongoose internals (`__v`, raw `_id`).
+- Safe parameter validation returning standard 400 validation error without leaking database exceptions.
+
+### Verified
+
+- Authentication requirement (401 on unauthenticated access).
+- Query filtering by category, severity, status, and logical AND multi-filter combinations.
+- Offset pagination math and boundary handling (default page/limit, beyond available data, empty sets).
+- Validation rejection of invalid enums, non-numeric or non-positive pages, limits exceeding 100, and unapproved query keys.
+- Detail retrieval returns 200 for existing incident, 404 for non-existing ObjectId, and 400 for malformed ObjectId.
+- Strict TypeScript compilation (`type-check`), ESLint, Prettier, and production build quality gates passed.
+
+---
+
 ## [3.2.0] - 2026-08-08 (Sprint 3.2 Create Incident API)
 
 ### Added

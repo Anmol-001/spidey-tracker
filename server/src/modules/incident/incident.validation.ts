@@ -1,6 +1,11 @@
 import { z } from 'zod';
-import { INCIDENT_CATEGORY } from './incident.constants.js';
-import { IncidentCategory } from './incident.types.js';
+import { INCIDENT_CATEGORY, INCIDENT_SEVERITY, INCIDENT_STATUS } from './incident.constants.js';
+import { IncidentCategory, IncidentSeverity, IncidentStatus } from './incident.types.js';
+
+/**
+ * MongoDB ObjectId Regex (24 hexadecimal characters)
+ */
+const OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/;
 
 /**
  * Validation schema for creating a new incident (POST /incidents)
@@ -35,3 +40,53 @@ export const createIncidentSchema = z
     address: z.string().trim().max(255, 'Address cannot exceed 255 characters').optional(),
   })
   .strict();
+
+/**
+ * Validation schema for incident query parameters (GET /incidents)
+ * Uses z.coerce to safely parse numeric values from URL search params.
+ */
+export const incidentQuerySchema = z
+  .object({
+    page: z.coerce
+      .number({ invalid_type_error: 'Page must be a valid number' })
+      .int('Page must be an integer')
+      .min(1, 'Page must be at least 1')
+      .default(1),
+    limit: z.coerce
+      .number({ invalid_type_error: 'Limit must be a valid number' })
+      .int('Limit must be an integer')
+      .min(1, 'Limit must be at least 1')
+      .max(100, 'Limit cannot exceed 100')
+      .default(20),
+    status: z
+      .enum(Object.values(INCIDENT_STATUS) as [IncidentStatus, ...IncidentStatus[]], {
+        errorMap: () => ({ message: 'Invalid incident status filter' }),
+      })
+      .optional(),
+    severity: z
+      .enum(Object.values(INCIDENT_SEVERITY) as [IncidentSeverity, ...IncidentSeverity[]], {
+        errorMap: () => ({ message: 'Invalid incident severity filter' }),
+      })
+      .optional(),
+    category: z
+      .enum(Object.values(INCIDENT_CATEGORY) as [IncidentCategory, ...IncidentCategory[]], {
+        errorMap: () => ({ message: 'Invalid incident category filter' }),
+      })
+      .optional(),
+  })
+  .strict();
+
+/**
+ * Validation schema for incident ID route parameters (GET /incidents/:id)
+ */
+export const incidentIdParamSchema = z
+  .object({
+    id: z
+      .string({ required_error: 'Incident ID is required' })
+      .trim()
+      .regex(OBJECT_ID_REGEX, 'Invalid incident ID format'),
+  })
+  .strict();
+
+export type IncidentQueryInput = z.infer<typeof incidentQuerySchema>;
+export type IncidentIdParamInput = z.infer<typeof incidentIdParamSchema>;

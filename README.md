@@ -76,8 +76,10 @@ Detailed project documentation is available inside the **docs/** directory.
 
 - Incident domain module
 - Create Incident API (`POST /api/v1/incidents`)
+- List Incidents API (`GET /api/v1/incidents`) with offset pagination, filtering, and deterministic ordering
+- Incident Detail API (`GET /api/v1/incidents/:id`) with 24-hex ObjectId validation and 404 handling
 - Protected incident reporting for authenticated users
-- Strict Zod request validation for incident creation
+- Strict Zod request validation for incident creation and query parameters
 - Secure backend-managed incident defaults (`createdBy`, `status`, `severity`, `assignedTo`)
 - Incident persistence with MongoDB and optimized schema indexes
 
@@ -336,6 +338,104 @@ Returns `201 Created`
 - **Authentication Requirement**: Valid Bearer token required for all roles (`citizen`, `responder`, `admin`).
 - **Validation Behavior**: Strict schema validation ensures coordinate bounds, required string lengths, valid categories, and rejects unauthorized properties (`status`, `severity`, `createdBy`, `assignedTo`).
 - **Default Backend Fields**: Automatically assigns `status = open`, `severity = medium`, `assignedTo = null`, and associates `createdBy` with the authenticated user ID.
+
+---
+
+### List Incidents
+
+```http
+GET /api/v1/incidents?page=1&limit=10&status=open&severity=medium&category=crime
+```
+
+Protected endpoint to retrieve a paginated list of incidents sorted newest-first.
+
+Requires
+
+```text
+Authorization: Bearer <access_token>
+```
+
+Query Parameters:
+
+- `page`: Page number (integer >= 1, default: `1`)
+- `limit`: Items per page (integer 1-100, default: `10`)
+- `category`: Optional filter (`crime`, `hazard`, `accident`, `medical`, `other`)
+- `severity`: Optional filter (`low`, `medium`, `high`, `critical`)
+- `status`: Optional filter (`open`, `in_progress`, `resolved`, `closed`)
+
+Returns `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Incidents retrieved successfully",
+  "data": [
+    {
+      "id": "66b1a2c3d4e5f6a7b8c9d0e2",
+      "title": "Bank robbery in progress",
+      "description": "Armed robbery reported at Financial District branch.",
+      "category": "crime",
+      "severity": "medium",
+      "status": "open",
+      "latitude": 40.7128,
+      "longitude": -74.006,
+      "address": "123 Wall St, New York, NY",
+      "createdBy": "66b1a2c3d4e5f6a7b8c9d0e1",
+      "assignedTo": null,
+      "createdAt": "2026-08-08T15:00:00.000Z",
+      "updatedAt": "2026-08-08T15:00:00.000Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "totalItems": 1,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPrevPage": false
+  }
+}
+```
+
+---
+
+### Get Incident by ID
+
+```http
+GET /api/v1/incidents/:id
+```
+
+Protected endpoint to retrieve a specific incident by its 24-character hex ObjectId.
+
+Requires
+
+```text
+Authorization: Bearer <access_token>
+```
+
+Returns `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Incident retrieved successfully",
+  "data": {
+    "id": "66b1a2c3d4e5f6a7b8c9d0e2",
+    "title": "Bank robbery in progress",
+    "description": "Armed robbery reported at Financial District branch.",
+    "category": "crime",
+    "severity": "medium",
+    "status": "open",
+    "latitude": 40.7128,
+    "longitude": -74.006,
+    "address": "123 Wall St, New York, NY",
+    "createdBy": "66b1a2c3d4e5f6a7b8c9d0e1",
+    "assignedTo": null,
+    "createdAt": "2026-08-08T15:00:00.000Z",
+    "updatedAt": "2026-08-08T15:00:00.000Z"
+  }
+}
+```
 
 ---
 

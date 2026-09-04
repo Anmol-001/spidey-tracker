@@ -313,6 +313,143 @@ interface ApiResponse<T = unknown> {
 }
 ```
 
+### 6.2 List Incidents
+
+- **Method**: `GET`
+- **Route**: `/api/v1/incidents`
+- **Purpose**: Query and retrieve a paginated list of incidents sorted newest-first.
+- **Authentication**: Required (`authenticateUser` middleware; accessible by `citizen`, `responder`, `admin`).
+- **Request Headers**:
+  - `Authorization: Bearer <access_token>`
+- **Query Parameters**:
+  - `page` (optional): Page number, positive integer >= 1 (default: `1`).
+  - `limit` (optional): Page size, integer between 1 and 100 (default: `10`, max: `100`).
+  - `category` (optional): Filter by incident category (`crime`, `hazard`, `accident`, `medical`, `other`).
+  - `severity` (optional): Filter by incident severity (`low`, `medium`, `high`, `critical`).
+  - `status` (optional): Filter by incident status (`open`, `in_progress`, `resolved`, `closed`).
+  - _Note_: Filters combine using logical `AND`. Unknown query parameters are strictly rejected.
+- **Sorting**: Newest first by `createdAt: -1`, with `_id: -1` as deterministic tie-breaker.
+- **Success Response `200 OK`**:
+
+```json
+{
+  "success": true,
+  "message": "Incidents retrieved successfully",
+  "data": [
+    {
+      "id": "66b1a2c3d4e5f6a7b8c9d0e2",
+      "title": "Bank robbery in progress",
+      "description": "Armed robbery reported at Financial District branch.",
+      "category": "crime",
+      "severity": "medium",
+      "status": "open",
+      "latitude": 40.7128,
+      "longitude": -74.006,
+      "address": "123 Wall St, New York, NY",
+      "createdBy": "66b1a2c3d4e5f6a7b8c9d0e1",
+      "assignedTo": null,
+      "createdAt": "2026-08-08T15:00:00.000Z",
+      "updatedAt": "2026-08-08T15:00:00.000Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "totalItems": 1,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPrevPage": false
+  }
+}
+```
+
+- **Error Responses**:
+  - `400 Bad Request`: Validation failure (invalid enum value, page < 1, limit > 100, non-integer numbers, or unrecognized query parameters).
+
+```json
+{
+  "success": false,
+  "message": "Validation failed",
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "details": [
+      {
+        "field": "limit",
+        "message": "Limit cannot exceed 100"
+      }
+    ]
+  }
+}
+```
+
+- `401 Unauthorized`: Missing or invalid Bearer token.
+
+### 6.3 Get Incident by ID
+
+- **Method**: `GET`
+- **Route**: `/api/v1/incidents/:id`
+- **Purpose**: Retrieves a single incident by its unique 24-hex-character ObjectId.
+- **Authentication**: Required (`authenticateUser` middleware; accessible by `citizen`, `responder`, `admin`).
+- **Request Headers**:
+  - `Authorization: Bearer <access_token>`
+- **Path Parameters**:
+  - `id`: 24-character hexadecimal MongoDB ObjectId string.
+- **Success Response `200 OK`**:
+
+```json
+{
+  "success": true,
+  "message": "Incident retrieved successfully",
+  "data": {
+    "id": "66b1a2c3d4e5f6a7b8c9d0e2",
+    "title": "Bank robbery in progress",
+    "description": "Armed robbery reported at Financial District branch.",
+    "category": "crime",
+    "severity": "medium",
+    "status": "open",
+    "latitude": 40.7128,
+    "longitude": -74.006,
+    "address": "123 Wall St, New York, NY",
+    "createdBy": "66b1a2c3d4e5f6a7b8c9d0e1",
+    "assignedTo": null,
+    "createdAt": "2026-08-08T15:00:00.000Z",
+    "updatedAt": "2026-08-08T15:00:00.000Z"
+  }
+}
+```
+
+- **Error Responses**:
+  - `400 Bad Request`: Malformed `id` parameter (invalid 24-character hexadecimal format).
+
+```json
+{
+  "success": false,
+  "message": "Validation failed",
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "details": [
+      {
+        "field": "id",
+        "message": "Invalid incident ID format"
+      }
+    ]
+  }
+}
+```
+
+- `401 Unauthorized`: Missing or invalid Bearer token.
+- `404 Not Found`: Incident not found for the given ObjectId.
+
+```json
+{
+  "success": false,
+  "message": "Incident not found",
+  "error": {
+    "code": "INCIDENT_NOT_FOUND"
+  }
+}
+```
+
 ---
 
 ## 7. Role-Based Access Control (RBAC)

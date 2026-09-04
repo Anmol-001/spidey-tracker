@@ -8,7 +8,7 @@
 
 **Development Methodology:** Sprint-Based Development
 
-**Current Status:** Sprint 3.2 Complete ✅
+**Current Status:** Sprint 3.3 Complete ✅
 
 ---
 
@@ -25,7 +25,8 @@
 | Sprint 2.5 | ✅ Complete | Role-based authorization middleware (authorizeRoles), role-aware request context |
 | Sprint 3.1 | ✅ Complete | Incident domain constants, types, and Mongoose persistence model                 |
 | Sprint 3.2 | ✅ Complete | Create Incident API (POST /api/v1/incidents), Zod validation, backend defaults   |
-| Sprint 3.3 | 🚧 Next     | Incident Retrieval APIs (GET /api/v1/incidents, GET /api/v1/incidents/:id)       |
+| Sprint 3.3 | ✅ Complete | Incident Retrieval APIs (GET /api/v1/incidents, GET /api/v1/incidents/:id)       |
+| Sprint 3.4 | 🚧 Next     | Incident Update & Status Transition APIs                                         |
 | Sprint 4   | ⏳ Planned  | File uploads & interactive maps                                                  |
 | Sprint 5   | ⏳ Planned  | Real-time tracking with Socket.IO                                                |
 | Sprint 6   | ⏳ Planned  | Dashboard, analytics & administration                                            |
@@ -82,6 +83,10 @@
 - ✅ Backend-managed default values (`status = OPEN`, `severity = MEDIUM`, `assignedTo = null`, `createdBy = req.user.id`)
 - ✅ Incident response DTO (`IncidentResponseDto`)
 - ✅ Incident Mongoose schema and model with optimized indexing
+- ✅ Incident list retrieval endpoint (`GET /api/v1/incidents`) with offset pagination and query filtering
+- ✅ Deterministic newest-first incident ordering (`{ createdAt: -1, _id: -1 }`)
+- ✅ Incident detail endpoint (`GET /api/v1/incidents/:id`) with strict 24-hex ObjectId validation and 404 handling
+- ✅ Sanitized incident pagination DTOs and query validation schemas
 
 ### Quality Assurance
 
@@ -92,6 +97,7 @@
 - ✅ Authentication regression testing
 - ✅ Role-based authorization testing
 - ✅ Incident creation functional and security testing
+- ✅ Incident retrieval, pagination, filtering, and detail verification
 
 ---
 
@@ -108,15 +114,14 @@
 
 # Current Milestone
 
-## Sprint 3.3 — Incident Retrieval APIs
+## Sprint 3.4 — Incident Update & Status Transition APIs
 
 ### Planned Deliverables
 
-- Incident list retrieval endpoint (`GET /api/v1/incidents`) with filtering and pagination
-- Incident detail endpoint (`GET /api/v1/incidents/:id`)
-- Query validation using Zod
-- Response DTO mapping for incident lists
-- Postman test suite and regression testing
+- Incident status transition endpoint (`PATCH /api/v1/incidents/:id/status`)
+- Role-based transition guards (e.g. `responder` / `admin` triage)
+- Incident assignment management (`PATCH /api/v1/incidents/:id/assign`)
+- Unit and integration tests for incident state machine
 
 ---
 
@@ -127,7 +132,7 @@
 | Foundation          | ████████████████████ 100% |
 | Authentication      | ████████████████████ 100% |
 | Authorization       | ████████████████████ 100% |
-| Incident Management |   ████████░░░░░░░░░░░ 40% |
+| Incident Management |   ████████████░░░░░░░ 60% |
 | Maps & Geolocation  |   ░░░░░░░░░░░░░░░░░░░░ 0% |
 | Real-Time Features  |   ░░░░░░░░░░░░░░░░░░░░ 0% |
 | Frontend            |  ███░░░░░░░░░░░░░░░░░ 15% |
@@ -135,4 +140,4 @@
 
 ---
 
-**Last Updated:** 2026-08-08
+**Last Updated:** 2026-09-04

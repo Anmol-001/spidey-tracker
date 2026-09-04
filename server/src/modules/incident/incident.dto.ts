@@ -30,3 +30,34 @@ export interface IncidentResponseDto {
   createdAt: string;
   updatedAt: string;
 }
+
+/**
+ * Data Transfer Object for query parameters when retrieving incidents
+ */
+export interface IncidentQueryDto {
+  page: number;
+  limit: number;
+  status?: IncidentStatus;
+  severity?: IncidentSeverity;
+  category?: IncidentCategory;
+}
+
+/**
+ * Data Transfer Object for pagination metadata
+ */
+export interface PaginationMetaDto {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+/**
+ * Data Transfer Object for paginated incident list response
+ */
+export interface PaginatedIncidentsResponseDto {
+  items: IncidentResponseDto[];
+  pagination: PaginationMetaDto;
+}
