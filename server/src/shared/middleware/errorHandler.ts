@@ -24,6 +24,16 @@ export const errorHandler: ErrorRequestHandler = (
     message = err.message;
     code = err.code;
     details = err.details;
+  } else if (
+    typeof err === 'object' &&
+    err !== null &&
+    (('status' in err && (err as { status?: number }).status === 413) ||
+      ('statusCode' in err && (err as { statusCode?: number }).statusCode === 413) ||
+      ('type' in err && (err as { type?: string }).type === 'entity.too.large'))
+  ) {
+    statusCode = 413;
+    message = 'Request entity too large. Maximum size is 1MB.';
+    code = 'PAYLOAD_TOO_LARGE';
   } else if (err instanceof Error) {
     message = config.isProduction ? 'Internal server error' : err.message;
     details = config.isProduction ? undefined : { stack: err.stack };

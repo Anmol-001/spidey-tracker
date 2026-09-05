@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { authController } from './auth.controller.js';
 import { validateRequest } from '../../shared/middleware/validate.js';
 import { authenticateUser } from '../../shared/middleware/auth.middleware.js';
+import { authRateLimiter } from '../../shared/middleware/rateLimiter.js';
 import { loginSchema, registerSchema } from './auth.validation.js';
 
 const router: Router = Router();
@@ -9,10 +10,11 @@ const router: Router = Router();
 /**
  * @route POST /register
  * @desc Register a new user account
- * @access Public
+ * @access Public (Rate limited)
  */
 router.post(
   '/register',
+  authRateLimiter,
   validateRequest({
     body: registerSchema,
   }),
@@ -22,10 +24,11 @@ router.post(
 /**
  * @route POST /login
  * @desc Authenticate user and issue access token
- * @access Public
+ * @access Public (Rate limited)
  */
 router.post(
   '/login',
+  authRateLimiter,
   validateRequest({
     body: loginSchema,
   }),

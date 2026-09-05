@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { incidentService } from './incident.service.js';
 import { successResponse } from '../../shared/utils/apiResponse.js';
 import { IncidentQueryInput } from './incident.validation.js';
+import { getValidatedQuery } from '../../shared/middleware/validate.js';
 
 /**
  * Incident Controller handling HTTP transport for incident endpoints
@@ -30,13 +31,14 @@ export class IncidentController {
   /**
    * Handles incident listing request with pagination and filtering
    *
-   * @param req - Express Request containing validated query parameters
+   * @param _req - Express Request containing validated query parameters
    * @param res - Express Response returning HTTP 200 OK with paginated incidents
    * @param next - Express NextFunction for forwarding unhandled errors
    */
-  public getIncidents = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public getIncidents = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const result = await incidentService.getIncidents(req.query as unknown as IncidentQueryInput);
+      const query = getValidatedQuery<IncidentQueryInput>(res);
+      const result = await incidentService.getIncidents(query);
       res.status(200).json(successResponse('Incidents retrieved successfully', result));
     } catch (error) {
       next(error);

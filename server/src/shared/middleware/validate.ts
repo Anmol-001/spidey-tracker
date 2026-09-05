@@ -9,19 +9,46 @@ interface RequestValidationSchemas {
 }
 
 /**
+ * Safe accessor for validated query parameters from response locals.
+ */
+export function getValidatedQuery<T>(res: Response): T {
+  return res.locals['validatedQuery'] as T;
+}
+
+/**
+ * Safe accessor for validated body payload from response locals.
+ */
+export function getValidatedBody<T>(res: Response): T {
+  return res.locals['validatedBody'] as T;
+}
+
+/**
+ * Safe accessor for validated route parameters from response locals.
+ */
+export function getValidatedParams<T>(res: Response): T {
+  return res.locals['validatedParams'] as T;
+}
+
+/**
  * Reusable middleware factory for validating incoming request body, query, or path parameters against Zod schemas.
  */
 export function validateRequest(schemas: RequestValidationSchemas) {
-  return async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       if (schemas.body) {
-        req.body = await schemas.body.parseAsync(req.body);
+        const parsedBody = await schemas.body.parseAsync(req.body);
+        req.body = parsedBody;
+        res.locals['validatedBody'] = parsedBody;
       }
       if (schemas.query) {
-        req.query = await schemas.query.parseAsync(req.query);
+        const parsedQuery = await schemas.query.parseAsync(req.query);
+        req.query = parsedQuery as unknown as Request['query'];
+        res.locals['validatedQuery'] = parsedQuery;
       }
       if (schemas.params) {
-        req.params = await schemas.params.parseAsync(req.params);
+        const parsedParams = await schemas.params.parseAsync(req.params);
+        req.params = parsedParams as unknown as Request['params'];
+        res.locals['validatedParams'] = parsedParams;
       }
       next();
     } catch (error) {

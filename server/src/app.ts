@@ -5,6 +5,7 @@ import compression from 'compression';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { config } from './shared/config/config.js';
+import { generalRateLimiter } from './shared/middleware/rateLimiter.js';
 import { notFoundHandler } from './shared/middleware/notFound.js';
 import { errorHandler } from './shared/middleware/errorHandler.js';
 import { healthRouter } from './modules/health/health.route.js';
@@ -34,16 +35,16 @@ export function createApp(): Express {
     app.use(morgan(config.isProduction ? 'combined' : 'dev'));
   }
 
-  // Request Parsing
-  app.use(express.json({ limit: '10mb' }));
-  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+  // Request Parsing (Strict 1MB limit to prevent DoS memory exhaustion)
+  app.use(express.json({ limit: '1mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '1mb' }));
   app.use(cookieParser());
 
-  // Direct Health Route (GET /health)
+  // Direct Health Route (GET /health) - Not rate-limited
   app.use('/health', healthRouter);
 
-  // API Version 1 Routes (GET /api/v1/health, etc.)
-  app.use('/api/v1', apiRouter);
+  // API Version 1 Routes (Guarded by General API Rate Limiter)
+  app.use('/api/v1', generalRateLimiter, apiRouter);
 
   // 404 Catch-All Handler
   app.use(notFoundHandler);

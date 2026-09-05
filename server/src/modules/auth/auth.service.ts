@@ -122,7 +122,7 @@ export class AuthService {
     // 1. Lookup user by normalized email and include passwordHash
     const user = await User.findOne({ email }).select('+passwordHash').exec();
 
-    if (!user) {
+    if (!user || user.isActive !== true) {
       throw new ApiError(401, 'Invalid email or password.', 'UNAUTHORIZED');
     }
 

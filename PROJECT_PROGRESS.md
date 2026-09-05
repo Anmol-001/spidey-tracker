@@ -8,29 +8,30 @@
 
 **Development Methodology:** Sprint-Based Development
 
-**Current Status:** Sprint 3.3 Complete ✅
+**Current Status:** Sprint 3.4 Complete ✅
 
 ---
 
 # Sprint Progress
 
-| Sprint     | Status      | Description                                                                      |
-| ---------- | ----------- | -------------------------------------------------------------------------------- |
-| Sprint 1   | ✅ Complete | Project foundation, monorepo setup, health module, shared architecture           |
-| Sprint 1.1 | ✅ Complete | Architectural refinement, cleanup, documentation improvements                    |
-| Sprint 2.1 | ✅ Complete | User registration, authentication module, password hashing, validation           |
-| Sprint 2.2 | ✅ Complete | User login, JWT access token generation, login validation, secure authentication |
-| Sprint 2.3 | ✅ Complete | JWT authentication middleware, protected routes, authenticated user endpoint     |
-| Sprint 2.4 | ✅ Complete | User profile module, service, controller, routes, GET /api/v1/users/me, DTO      |
-| Sprint 2.5 | ✅ Complete | Role-based authorization middleware (authorizeRoles), role-aware request context |
-| Sprint 3.1 | ✅ Complete | Incident domain constants, types, and Mongoose persistence model                 |
-| Sprint 3.2 | ✅ Complete | Create Incident API (POST /api/v1/incidents), Zod validation, backend defaults   |
-| Sprint 3.3 | ✅ Complete | Incident Retrieval APIs (GET /api/v1/incidents, GET /api/v1/incidents/:id)       |
-| Sprint 3.4 | 🚧 Next     | Incident Update & Status Transition APIs                                         |
-| Sprint 4   | ⏳ Planned  | File uploads & interactive maps                                                  |
-| Sprint 5   | ⏳ Planned  | Real-time tracking with Socket.IO                                                |
-| Sprint 6   | ⏳ Planned  | Dashboard, analytics & administration                                            |
-| Sprint 7   | ⏳ Planned  | Production deployment & DevOps                                                   |
+| Sprint     | Status      | Description                                                                            |
+| ---------- | ----------- | -------------------------------------------------------------------------------------- |
+| Sprint 1   | ✅ Complete | Project foundation, monorepo setup, health module, shared architecture                 |
+| Sprint 1.1 | ✅ Complete | Architectural refinement, cleanup, documentation improvements                          |
+| Sprint 2.1 | ✅ Complete | User registration, authentication module, password hashing, validation                 |
+| Sprint 2.2 | ✅ Complete | User login, JWT access token generation, login validation, secure authentication       |
+| Sprint 2.3 | ✅ Complete | JWT authentication middleware, protected routes, authenticated user endpoint           |
+| Sprint 2.4 | ✅ Complete | User profile module, service, controller, routes, GET /api/v1/users/me, DTO            |
+| Sprint 2.5 | ✅ Complete | Role-based authorization middleware (authorizeRoles), role-aware request context       |
+| Sprint 3.1 | ✅ Complete | Incident domain constants, types, and Mongoose persistence model                       |
+| Sprint 3.2 | ✅ Complete | Create Incident API (POST /api/v1/incidents), Zod validation, backend defaults         |
+| Sprint 3.3 | ✅ Complete | Incident Retrieval APIs (GET /api/v1/incidents, GET /api/v1/incidents/:id)             |
+| Sprint 3.4 | ✅ Complete | Backend Hardening (Rate limiting, active account checks, 1MB payload cap, profile opt) |
+| Sprint 3.5 | 🚧 Next     | Incident Update & Status Transition APIs                                               |
+| Sprint 4   | ⏳ Planned  | File uploads & interactive maps                                                        |
+| Sprint 5   | ⏳ Planned  | Real-time tracking with Socket.IO                                                      |
+| Sprint 6   | ⏳ Planned  | Dashboard, analytics & administration                                                  |
+| Sprint 7   | ⏳ Planned  | Production deployment & DevOps                                                         |
 
 ---
 
@@ -114,7 +115,7 @@
 
 # Current Milestone
 
-## Sprint 3.4 — Incident Update & Status Transition APIs
+## Sprint 3.5 — Incident Update & Status Transition APIs
 
 ### Planned Deliverables
 
@@ -140,4 +141,4 @@
 
 ---
 
-**Last Updated:** 2026-09-04
+**Last Updated:** 2026-09-05

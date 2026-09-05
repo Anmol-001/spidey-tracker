@@ -32,9 +32,12 @@ export const authenticateUser = async (
       throw new ApiError(401, 'Unauthorized', 'UNAUTHORIZED');
     }
 
-    const user = await User.findById(payload.sub).select('_id username email role').lean().exec();
+    const user = await User.findById(payload.sub)
+      .select('_id username email role isActive createdAt updatedAt')
+      .lean()
+      .exec();
 
-    if (!user) {
+    if (!user || user.isActive !== true) {
       throw new ApiError(401, 'Unauthorized', 'UNAUTHORIZED');
     }
 
@@ -43,6 +46,15 @@ export const authenticateUser = async (
       username: user.username,
       email: user.email,
       role: user.role,
+      isActive: user.isActive,
+      createdAt:
+        user.createdAt instanceof Date
+          ? user.createdAt.toISOString()
+          : new Date(user.createdAt).toISOString(),
+      updatedAt:
+        user.updatedAt instanceof Date
+          ? user.updatedAt.toISOString()
+          : new Date(user.updatedAt).toISOString(),
     };
 
     next();

@@ -87,8 +87,11 @@ Detailed project documentation is available inside the **docs/** directory.
 
 - Password hashes strictly excluded from all API responses and database transforms
 - JWT secrets and expiration fully environment-driven
-- Real-time role verification directly sourced from MongoDB during authentication
-- Fail-safe authorization error handling returning standardized `401 Unauthorized` and `403 Forbidden` envelopes
+- Real-time role and active account (`isActive`) verification directly sourced from MongoDB during authentication
+- Rate-limiting protection via `express-rate-limit` (targeted auth limiter on login/register, general limiter on API routes)
+- Request body payload ceiling strictly enforced at 1MB to prevent DoS memory exhaustion
+- Single database lookup optimization on canonical `/api/v1/users/me` endpoint
+- Fail-safe authorization error handling returning standardized `401 Unauthorized`, `403 Forbidden`, and `429 Too Many Requests` envelopes
 
 ### Code Quality
 

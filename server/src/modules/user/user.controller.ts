@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { userService } from './user.service.js';
 import { ApiError } from '../../shared/utils/apiError.js';
 import { successResponse } from '../../shared/utils/apiResponse.js';
 
@@ -20,15 +19,13 @@ export class UserController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const userId = req.user?.id;
+      const user = req.user;
 
-      if (!userId) {
+      if (!user) {
         throw new ApiError(401, 'Unauthorized', 'UNAUTHORIZED');
       }
 
-      const profile = await userService.getProfile(userId);
-
-      res.status(200).json(successResponse('User profile retrieved successfully', profile));
+      res.status(200).json(successResponse('User profile retrieved successfully', user));
     } catch (error) {
       next(error);
     }

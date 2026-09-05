@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.4.0] - 2026-09-05 (Sprint 3.4 Backend Hardening)
+
+### Added
+
+- `express-rate-limit` integration with dedicated limiters for authentication and API routes (`server/src/shared/middleware/rateLimiter.ts`).
+- Standardized HTTP 429 (`TOO_MANY_REQUESTS`) error handling envelope.
+- Type-safe validation accessors (`getValidatedQuery`, `getValidatedBody`, `getValidatedParams`) in `validate.ts`.
+
+### Changed
+
+- Global request body payload size ceiling tightened from 10MB to 1MB for JSON and URL-encoded parsers.
+- `GET /api/v1/users/me` optimized to resolve verified user profile context in a single database round-trip.
+- Incident controller query extraction updated to use `getValidatedQuery` without double-casting.
+
+### Security
+
+- Enforced `isActive === true` account status verification across `authenticateUser` middleware and `authService.login`. Inactive or suspended accounts are rejected with HTTP 401 without leaking internal account state.
+- Brute-force credential protection on `POST /api/v1/auth/login` and `POST /api/v1/auth/register` (10 requests per 1 minute window).
+- API abuse protection on `/api/v1/*` (100 requests per 15 minutes window, bypassing `/health`).
+- Memory exhaustion DoS mitigation via strict 1MB body limit.
+
+---
+
 ## [3.3.0] - 2026-09-04 (Sprint 3.3 Incident Retrieval & Query APIs)
 
 ### Added

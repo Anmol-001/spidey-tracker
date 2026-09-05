@@ -477,3 +477,38 @@ When an authenticated user attempts to access an endpoint requiring a higher pri
   }
 }
 ```
+
+---
+
+## 8. Security & Protection Controls (Sprint 3.4 Hardening)
+
+### 8.1 Active Account Enforcement
+
+All authentication gates (`authenticateUser` middleware and `POST /api/v1/auth/login`) verify that the account possesses `isActive === true`. Deactivated or suspended accounts are rejected with HTTP `401 Unauthorized` without leaking account status details.
+
+### 8.2 Rate Limiting
+
+Endpoints are protected against brute-force attacks and abuse using standard rate limiting with `RateLimit-*` headers:
+
+- **Authentication Limiter**: Applied to `POST /api/v1/auth/login` and `POST /api/v1/auth/register` (10 requests per 1 minute window).
+- **General API Limiter**: Applied to `/api/v1/*` routes (100 requests per 15 minute window, bypassing `/health` operational heartbeat probes).
+- **Response Envelope `429 Too Many Requests`**:
+
+```json
+{
+  "success": false,
+  "message": "Too many authentication attempts. Please try again after a minute.",
+  "error": {
+    "code": "TOO_MANY_REQUESTS"
+  }
+}
+```
+
+### 8.3 Request Body Limit
+
+Global request body parsing limit is strictly capped at **1MB** (`1mb`) for JSON and URL-encoded payloads, mitigating Denial of Service (DoS) memory exhaustion. Payloads exceeding this size are rejected with HTTP `413 Payload Too Large`.
+
+### 8.4 Canonical User Profile vs Authentication Probe
+
+- **`GET /api/v1/users/me`** is the **canonical user profile endpoint**, returning the complete sanitized user profile optimized to reuse verified authentication context without redundant database round-trips.
+- **`GET /api/v1/auth/me`** is retained as a lightweight operational authentication and JWT token verification probe.

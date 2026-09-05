@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { authService } from './auth.service.js';
+import { ApiError } from '../../shared/utils/apiError.js';
 import { successResponse } from '../../shared/utils/apiResponse.js';
 
 /**
@@ -51,7 +52,20 @@ export class AuthController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      res.status(200).json(successResponse('Authenticated user retrieved successfully', req.user));
+      const user = req.user;
+
+      if (!user) {
+        throw new ApiError(401, 'Unauthorized', 'UNAUTHORIZED');
+      }
+
+      res.status(200).json(
+        successResponse('Authenticated user retrieved successfully', {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+        }),
+      );
     } catch (error) {
       next(error);
     }
