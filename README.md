@@ -344,7 +344,7 @@ Returns `201 Created`
 ### List Incidents
 
 ```http
-GET /api/v1/incidents?page=1&limit=10&status=open&severity=medium&category=crime
+GET /api/v1/incidents?page=1&limit=20&status=open&severity=medium&category=crime
 ```
 
 Protected endpoint to retrieve a paginated list of incidents sorted newest-first.
@@ -358,10 +358,10 @@ Authorization: Bearer <access_token>
 Query Parameters:
 
 - `page`: Page number (integer >= 1, default: `1`)
-- `limit`: Items per page (integer 1-100, default: `10`)
-- `category`: Optional filter (`crime`, `hazard`, `accident`, `medical`, `other`)
+- `limit`: Items per page (integer 1-100, default: `20`)
+- `category`: Optional filter (`crime`, `fire`, `accident`, `medical`, `natural_disaster`, `other`)
 - `severity`: Optional filter (`low`, `medium`, `high`, `critical`)
-- `status`: Optional filter (`open`, `in_progress`, `resolved`, `closed`)
+- `status`: Optional filter (`open`, `in_progress`, `resolved`)
 
 Returns `200 OK`
 
@@ -369,30 +369,32 @@ Returns `200 OK`
 {
   "success": true,
   "message": "Incidents retrieved successfully",
-  "data": [
-    {
-      "id": "66b1a2c3d4e5f6a7b8c9d0e2",
-      "title": "Bank robbery in progress",
-      "description": "Armed robbery reported at Financial District branch.",
-      "category": "crime",
-      "severity": "medium",
-      "status": "open",
-      "latitude": 40.7128,
-      "longitude": -74.006,
-      "address": "123 Wall St, New York, NY",
-      "createdBy": "66b1a2c3d4e5f6a7b8c9d0e1",
-      "assignedTo": null,
-      "createdAt": "2026-08-08T15:00:00.000Z",
-      "updatedAt": "2026-08-08T15:00:00.000Z"
+  "data": {
+    "items": [
+      {
+        "id": "66b1a2c3d4e5f6a7b8c9d0e2",
+        "title": "Bank robbery in progress",
+        "description": "Armed robbery reported at Financial District branch.",
+        "category": "crime",
+        "severity": "medium",
+        "status": "open",
+        "latitude": 40.7128,
+        "longitude": -74.006,
+        "address": "123 Wall St, New York, NY",
+        "createdBy": "66b1a2c3d4e5f6a7b8c9d0e1",
+        "assignedTo": null,
+        "createdAt": "2026-08-08T15:00:00.000Z",
+        "updatedAt": "2026-08-08T15:00:00.000Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "total": 1,
+      "totalPages": 1,
+      "hasNextPage": false,
+      "hasPrevPage": false
     }
-  ],
-  "pagination": {
-    "page": 1,
-    "limit": 10,
-    "totalItems": 1,
-    "totalPages": 1,
-    "hasNextPage": false,
-    "hasPrevPage": false
   }
 }
 ```

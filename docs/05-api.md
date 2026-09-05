@@ -323,10 +323,10 @@ interface ApiResponse<T = unknown> {
   - `Authorization: Bearer <access_token>`
 - **Query Parameters**:
   - `page` (optional): Page number, positive integer >= 1 (default: `1`).
-  - `limit` (optional): Page size, integer between 1 and 100 (default: `10`, max: `100`).
-  - `category` (optional): Filter by incident category (`crime`, `hazard`, `accident`, `medical`, `other`).
+  - `limit` (optional): Page size, integer between 1 and 100 (default: `20`, max: `100`).
+  - `category` (optional): Filter by incident category (`crime`, `fire`, `accident`, `medical`, `natural_disaster`, `other`).
   - `severity` (optional): Filter by incident severity (`low`, `medium`, `high`, `critical`).
-  - `status` (optional): Filter by incident status (`open`, `in_progress`, `resolved`, `closed`).
+  - `status` (optional): Filter by incident status (`open`, `in_progress`, `resolved`).
   - _Note_: Filters combine using logical `AND`. Unknown query parameters are strictly rejected.
 - **Sorting**: Newest first by `createdAt: -1`, with `_id: -1` as deterministic tie-breaker.
 - **Success Response `200 OK`**:
@@ -335,30 +335,32 @@ interface ApiResponse<T = unknown> {
 {
   "success": true,
   "message": "Incidents retrieved successfully",
-  "data": [
-    {
-      "id": "66b1a2c3d4e5f6a7b8c9d0e2",
-      "title": "Bank robbery in progress",
-      "description": "Armed robbery reported at Financial District branch.",
-      "category": "crime",
-      "severity": "medium",
-      "status": "open",
-      "latitude": 40.7128,
-      "longitude": -74.006,
-      "address": "123 Wall St, New York, NY",
-      "createdBy": "66b1a2c3d4e5f6a7b8c9d0e1",
-      "assignedTo": null,
-      "createdAt": "2026-08-08T15:00:00.000Z",
-      "updatedAt": "2026-08-08T15:00:00.000Z"
+  "data": {
+    "items": [
+      {
+        "id": "66b1a2c3d4e5f6a7b8c9d0e2",
+        "title": "Bank robbery in progress",
+        "description": "Armed robbery reported at Financial District branch.",
+        "category": "crime",
+        "severity": "medium",
+        "status": "open",
+        "latitude": 40.7128,
+        "longitude": -74.006,
+        "address": "123 Wall St, New York, NY",
+        "createdBy": "66b1a2c3d4e5f6a7b8c9d0e1",
+        "assignedTo": null,
+        "createdAt": "2026-08-08T15:00:00.000Z",
+        "updatedAt": "2026-08-08T15:00:00.000Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "total": 1,
+      "totalPages": 1,
+      "hasNextPage": false,
+      "hasPrevPage": false
     }
-  ],
-  "pagination": {
-    "page": 1,
-    "limit": 10,
-    "totalItems": 1,
-    "totalPages": 1,
-    "hasNextPage": false,
-    "hasPrevPage": false
   }
 }
 ```
