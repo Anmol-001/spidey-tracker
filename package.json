@@ -19,6 +19,9 @@
     "lint:fix": "npm run lint:fix --workspace=server && npm run lint:fix --workspace=client",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md,yml,yaml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md,yml,yaml}\"",
+    "test": "npm run test --workspace=server",
+    "test:watch": "npm run test:watch --workspace=server",
+    "test:coverage": "npm run test:coverage --workspace=server",
     "prepare": "husky"
   },
   "devDependencies": {

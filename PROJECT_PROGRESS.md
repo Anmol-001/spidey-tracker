@@ -8,7 +8,7 @@
 
 **Development Methodology:** Sprint-Based Development
 
-**Current Status:** Sprint 3.4 Complete ✅
+**Current Status:** Sprint 3.5 Complete ✅
 
 ---
 
@@ -27,7 +27,8 @@
 | Sprint 3.2 | ✅ Complete | Create Incident API (POST /api/v1/incidents), Zod validation, backend defaults         |
 | Sprint 3.3 | ✅ Complete | Incident Retrieval APIs (GET /api/v1/incidents, GET /api/v1/incidents/:id)             |
 | Sprint 3.4 | ✅ Complete | Backend Hardening (Rate limiting, active account checks, 1MB payload cap, profile opt) |
-| Sprint 3.5 | 🚧 Next     | Incident Update & Status Transition APIs                                               |
+| Sprint 3.5 | ✅ Complete | Automated Testing (Vitest, Supertest, MongoMemoryServer, integration & unit suites)    |
+| Sprint 3.6 | 🚧 Next     | Incident Update & Status Transition APIs                                               |
 | Sprint 4   | ⏳ Planned  | File uploads & interactive maps                                                        |
 | Sprint 5   | ⏳ Planned  | Real-time tracking with Socket.IO                                                      |
 | Sprint 6   | ⏳ Planned  | Dashboard, analytics & administration                                                  |
@@ -99,6 +100,12 @@
 - ✅ Role-based authorization testing
 - ✅ Incident creation functional and security testing
 - ✅ Incident retrieval, pagination, filtering, and detail verification
+- ✅ Comprehensive automated testing foundation (Vitest, Supertest, MongoMemoryServer)
+- ✅ Authentication integration test suite (registration, duplicate checks, login, inactive accounts)
+- ✅ Security & hardening test suite (auth rate limit, 413 payload cap, health bypass, RBAC 401/403)
+- ✅ User profile integration test suite (sanitization, no password leak, single-query optimization)
+- ✅ Incident creation, listing, filtering, pagination, and detail integration test suites
+- ✅ Unit tests for JWT utility and Zod validation middleware
 
 ---
 
@@ -115,7 +122,7 @@
 
 # Current Milestone
 
-## Sprint 3.5 — Incident Update & Status Transition APIs
+## Sprint 3.6 — Incident Update & Status Transition APIs
 
 ### Planned Deliverables
 
@@ -134,6 +141,7 @@
 | Authentication      | ████████████████████ 100% |
 | Authorization       | ████████████████████ 100% |
 | Incident Management |   ████████████░░░░░░░ 60% |
+| Automated Testing   | ████████████████████ 100% |
 | Maps & Geolocation  |   ░░░░░░░░░░░░░░░░░░░░ 0% |
 | Real-Time Features  |   ░░░░░░░░░░░░░░░░░░░░ 0% |
 | Frontend            |  ███░░░░░░░░░░░░░░░░░ 15% |

@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.5.0] - 2026-09-05 (Sprint 3.5 Automated Testing Foundation)
+
+### Added
+
+- Vitest testing framework configured for TypeScript and ESM/NodeNext in the `server` workspace (`server/vitest.config.ts`).
+- Supertest integration for testing Express HTTP API contracts without starting HTTP listener ports.
+- `mongodb-memory-server` test database lifecycle helper (`server/tests/helpers/db.helper.ts`) providing completely isolated in-memory MongoDB databases with `deleteMany({})` between tests and support for explicit `MONGODB_URI_TEST`.
+- Global test environment setup (`server/tests/setup.ts`) enforcing `NODE_ENV=test`, dedicated test JWT secret, port isolation, and `LOG_LEVEL=error`.
+- Authentication test helper (`server/tests/helpers/auth.helper.ts`) and dynamic fixtures for users and incidents (`server/tests/fixtures/`).
+- Authentication integration test suites (`server/tests/integration/auth/`):
+  - User registration: 201 Created, duplicate email 409, duplicate username 409, validation errors 400, passwordHash exclusion.
+  - User login: 200 OK with token, wrong password 401, nonexistent email 401, inactive account 401.
+  - Authenticated identity probe (`GET /api/v1/auth/me`): 200 OK, token rejection for missing/malformed/inactive user.
+- User profile integration test suite (`server/tests/integration/user/profile.test.ts`):
+  - Canonical user profile retrieval (`GET /api/v1/users/me`), field sanitization (`passwordHash` and `__v` absent), inactive user token rejection, and verified single-database-query execution.
+- Incident integration test suites (`server/tests/integration/incident/`):
+  - Incident creation: authenticated citizen 201, backend-managed defaults (`status=open`, `severity=medium`, `assignedTo=null`, `createdBy=req.user.id`), rejection of client-injected server fields, coordinate bounds validation, category validation.
+  - Incident listing & queries: default pagination (page 1, limit 20), custom pagination, category/severity/status filters, multi-filter combinations, empty result sets, deterministic newest-first sorting.
+  - Incident detail: existing ID 200, non-existent valid ObjectId 404, malformed hex ID 400, unauthenticated 401.
+- Security and hardening integration test suite (`server/tests/integration/security/security.test.ts`):
+  - Brute-force auth rate limiting returning 429 `TOO_MANY_REQUESTS` with standard envelope.
+  - Health endpoint (`/health`) rate limit bypass.
+  - 1MB body payload ceiling enforcement returning 413 `PAYLOAD_TOO_LARGE`.
+  - Role-based authorization: 401 for unauthenticated vs 403 `FORBIDDEN` for disallowed roles.
+- Unit test suites (`server/tests/unit/`):
+  - JWT token utility: signing, verification, expiration rejection, tampered signature rejection, malformed token rejection.
+  - Zod validation middleware: valid forwarding, `res.locals` typed accessor population, 400 error envelope, strict unknown field rejection.
+- Workspace scripts: `npm test`, `npm run test:watch`, and `npm run test:coverage`.
+
+---
+
 ## [3.4.0] - 2026-09-05 (Sprint 3.4 Backend Hardening)
 
 ### Added
